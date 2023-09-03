@@ -25,9 +25,15 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 import org.georchestra.gateway.filter.headers.RemoveHeadersGatewayFilterFactory.RegExConfig;
+import org.georchestra.gateway.model.GatewayConfigProperties;
+import org.georchestra.gateway.security.ldap.LdapConfigProperties;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.cloud.gateway.filter.factory.GatewayFilterFactory;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 
@@ -61,10 +67,20 @@ import lombok.extern.slf4j.Slf4j;
  * 
  */
 @Slf4j(topic = "org.georchestra.gateway.filter.headers")
+@EnableConfigurationProperties(LdapConfigProperties.class)
 public class RemoveHeadersGatewayFilterFactory extends AbstractGatewayFilterFactory<RegExConfig> {
 
-    public RemoveHeadersGatewayFilterFactory() {
+    @Autowired
+    private Environment environment;
+
+    @Value("${georchestra.gateway.security.createNonExistingUsersInLDAP:}")
+    private String trusted;
+
+    GatewayConfigProperties configProps;
+
+    public RemoveHeadersGatewayFilterFactory(GatewayConfigProperties configProps) {
         super(RegExConfig.class);
+        this.configProps = configProps;
     }
 
     @Override
@@ -78,12 +94,26 @@ public class RemoveHeadersGatewayFilterFactory extends AbstractGatewayFilterFact
         return (exchange, chain) -> {
             final RegExConfig config = regexConfig;// == null ? DEFAULT_SECURITY_HEADERS_CONFIG : regexConfig;
             HttpHeaders incoming = exchange.getRequest().getHeaders();
-            if (config.anyMatches(incoming)) {
+
+            if (config.anyMatches(incoming) && (!configProps.isHeaderAuthentication()
+                    || !headerAuthenticated(exchange.getRequest().getRemoteAddress().getAddress().toString()))) {
                 ServerHttpRequest request = exchange.getRequest().mutate().headers(config::removeMatching).build();
                 exchange = exchange.mutate().request(request).build();
             }
+
             return chain.filter(exchange);
         };
+    }
+
+    private boolean headerAuthenticated(String serverAddress) {
+        if (configProps != null && configProps.getHeaderTrustedProxies() != null
+                && configProps.isHeaderAuthentication()) {
+            HashSet hashSet = new HashSet<>(Arrays.asList(configProps.getHeaderTrustedProxies().split(";")));
+            if (!hashSet.isEmpty() && hashSet.contains(serverAddress)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @NoArgsConstructor

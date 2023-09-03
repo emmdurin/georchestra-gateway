@@ -28,6 +28,7 @@ import static org.mockito.Mockito.verify;
 import java.util.stream.IntStream;
 
 import org.georchestra.gateway.filter.headers.RemoveHeadersGatewayFilterFactory.RegExConfig;
+import org.georchestra.gateway.model.GatewayConfigProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -52,7 +53,7 @@ class RemoveHeadersGatewayFilterFactoryTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        filter = new RemoveHeadersGatewayFilterFactory();
+        filter = new RemoveHeadersGatewayFilterFactory(new GatewayConfigProperties());
     }
 
     @Test

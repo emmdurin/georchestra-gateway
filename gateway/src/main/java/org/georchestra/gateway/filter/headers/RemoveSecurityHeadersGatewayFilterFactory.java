@@ -18,6 +18,7 @@
  */
 package org.georchestra.gateway.filter.headers;
 
+import org.georchestra.gateway.model.GatewayConfigProperties;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.cloud.gateway.filter.factory.GatewayFilterFactory;
@@ -49,12 +50,13 @@ public class RemoveSecurityHeadersGatewayFilterFactory extends AbstractGatewayFi
 
     private static final String DEFAULT_SEC_HEADERS_PATTERN = "(?i)(sec-.*|Authorization)";
 
-    private final RemoveHeadersGatewayFilterFactory delegate = new RemoveHeadersGatewayFilterFactory();
+    private final RemoveHeadersGatewayFilterFactory delegate;
     private final RemoveHeadersGatewayFilterFactory.RegExConfig config = new RemoveHeadersGatewayFilterFactory.RegExConfig(
             DEFAULT_SEC_HEADERS_PATTERN);
 
-    public RemoveSecurityHeadersGatewayFilterFactory() {
+    public RemoveSecurityHeadersGatewayFilterFactory(GatewayConfigProperties configProps) {
         super(Object.class);
+        delegate = new RemoveHeadersGatewayFilterFactory(configProps);
     }
 
     @Override

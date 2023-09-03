@@ -38,6 +38,10 @@ import lombok.Generated;
 @ConfigurationProperties("georchestra.gateway")
 public class GatewayConfigProperties {
 
+    private boolean headerAuthentication = false;
+
+    private String headerTrustedProxies;
+
     private Map<String, List<String>> rolesMappings = Map.of();
 
     /**

@@ -18,11 +18,11 @@
     <form class="form-signin" method="post" action="/login" th:if="${ldapEnabled}">
         <h2 class="form-signin-heading"><span th:text="#{login_message_title}"></span></h2>
         <p>
-            <label for="username" class="sr-only">span th:text="#{username}"></span></label>
+            <label for="username" class="sr-only"><span th:text="#{username}"></span></label>
             <input type="text" id="username" name="username" class="form-control" th:placeholder="#{username}" required autofocus>
         </p>
         <p>
-            <label for="password" class="sr-only">span th:text="#{password}"></span></label>
+            <label for="password" class="sr-only"><span th:text="#{password}"></span></label>
             <input type="password" id="password" name="password" class="form-control" th:placeholder="#{password}" required>
         </p>
         <button class="btn btn-lg btn-primary btn-block mb-2" type="submit"><span th:text="#{login}"></span></button>

@@ -19,6 +19,10 @@
 package org.georchestra.gateway.security;
 
 import lombok.extern.slf4j.Slf4j;
+import org.georchestra.ds.roles.RoleDao;
+import org.georchestra.ds.security.UsersApiImpl;
+import org.georchestra.ds.users.AccountDao;
+import org.georchestra.ds.users.UserRule;
 import org.georchestra.gateway.model.GatewayConfigProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -28,6 +32,7 @@ import org.springframework.security.config.annotation.web.reactive.EnableWebFlux
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.logout.ServerLogoutSuccessHandler;
+import org.georchestra.security.model.GeorchestraUser;
 
 import java.util.List;
 import java.util.Map;
@@ -60,6 +65,12 @@ public class GatewaySecurityConfiguration {
 
     @Autowired(required = false)
     ServerLogoutSuccessHandler oidcLogoutSuccessHandler;
+
+    @Autowired(required = false)
+    private AccountDao accountDao;
+
+    @Autowired(required = false)
+    private RoleDao roleDao;
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http,
@@ -101,6 +112,10 @@ public class GatewaySecurityConfiguration {
 
     public @Bean ResolveGeorchestraUserGlobalFilter resolveGeorchestraUserGlobalFilter(GeorchestraUserMapper resolver) {
         return new ResolveGeorchestraUserGlobalFilter(resolver);
+    }
+
+    public @Bean ResolveHttpHeadersGeorchestraUserFilter resolveHttpHeadersGeorchestraUserFilter() {
+        return new ResolveHttpHeadersGeorchestraUserFilter();
     }
 
     /**
