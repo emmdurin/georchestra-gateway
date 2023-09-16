@@ -18,11 +18,14 @@
  */
 package org.georchestra.gateway.filter.headers;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.georchestra.gateway.filter.headers.RemoveHeadersGatewayFilterFactory.RegExConfig;
 import org.georchestra.gateway.model.GatewayConfigProperties;
@@ -106,10 +109,19 @@ public class RemoveHeadersGatewayFilterFactory extends AbstractGatewayFilterFact
     }
 
     private boolean headerAuthenticated(String serverAddress) {
-        if (configProps != null && configProps.getHeaderTrustedProxies() != null
+        if (configProps != null && !configProps.getHeaderTrustedProxies().isEmpty()
                 && configProps.isHeaderAuthentication()) {
-            HashSet hashSet = new HashSet<>(Arrays.asList(configProps.getHeaderTrustedProxies().split(";")));
-            if (!hashSet.isEmpty() && hashSet.contains(serverAddress)) {
+            if (configProps.getHeaderTrustedProxies().stream().filter(e -> serverAddress.contains(e))
+                    .collect(Collectors.toList()).size() > 0) {
+                return true;
+            }
+            if (configProps.getHeaderTrustedProxies().stream().filter(e -> {
+                try {
+                    return InetAddress.getByName(serverAddress).toString().contains(e);
+                } catch (UnknownHostException exp) {
+                    return false;
+                }
+            }).collect(Collectors.toList()).size() > 0) {
                 return true;
             }
         }

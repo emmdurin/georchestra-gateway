@@ -40,7 +40,7 @@ public class GatewayConfigProperties {
 
     private boolean headerAuthentication = false;
 
-    private String headerTrustedProxies;
+    private List<String> headerTrustedProxies;
 
     private Map<String, List<String>> rolesMappings = Map.of();
 

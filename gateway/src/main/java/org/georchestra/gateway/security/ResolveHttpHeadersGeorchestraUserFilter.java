@@ -64,7 +64,8 @@ public class ResolveHttpHeadersGeorchestraUserFilter implements GlobalFilter, Or
     }
 
     public @Override Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        if (exchange.getRequest().getHeaders().containsKey("sec-mellon-name-id")) {
+        if (exchange.getRequest().getHeaders().containsKey("sec-georchestra-preauthenticated")
+                && exchange.getRequest().getHeaders().get("sec-georchestra-preauthenticated").get(0).equals("true")) {
             if (config.isCreateNonExistingUsersInLDAP()) {
                 String username = exchange.getRequest().getHeaders().get("sec-username").get(0);
                 Optional<GeorchestraUser> userOpt = map(username);
@@ -118,7 +119,6 @@ public class ResolveHttpHeadersGeorchestraUserFilter implements GlobalFilter, Or
                 roles.add("ROLE_USER");
             }
             userOpt.get().setRoles(roles);
-            userOpt.get().setOrganization("INRAE");
         }
         return userOpt;
     }
@@ -139,7 +139,6 @@ public class ResolveHttpHeadersGeorchestraUserFilter implements GlobalFilter, Or
             roles.add("ROLE_USER");
         }
         user.setRoles(roles);
-        user.setOrganization("INRAE");
         return Optional.of(user);
     }
 
