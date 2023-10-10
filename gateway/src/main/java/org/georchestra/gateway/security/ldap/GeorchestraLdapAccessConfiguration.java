@@ -17,7 +17,7 @@ import org.springframework.ldap.pool.validation.DefaultDirContextValidator;
 
 import static java.util.Objects.requireNonNull;
 
-@Configuration(proxyBeanMethods = true)
+@Configuration
 @EnableConfigurationProperties(LdapConfigProperties.class)
 @Slf4j(topic = "org.georchestra.gateway.security.ldap")
 public class GeorchestraLdapAccessConfiguration {
