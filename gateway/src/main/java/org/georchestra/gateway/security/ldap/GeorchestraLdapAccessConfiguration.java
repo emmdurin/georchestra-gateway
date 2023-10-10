@@ -11,7 +11,6 @@ import org.georchestra.ds.users.AccountDao;
 import org.georchestra.ds.users.AccountDaoImpl;
 import org.georchestra.gateway.security.ldap.extended.ExtendedLdapConfig;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -118,6 +117,9 @@ public class GeorchestraLdapAccessConfiguration {
     @Bean
     @ConditionalOnExpression("${georchestra.gateway.security.createNonExistingUsersInLDAP:true} and ${georchestra.gateway.security.ldap.default.enabled:false}")
     public RoleProtected roleProtected() {
-        return new RoleProtected();
+        RoleProtected roleProtected = new RoleProtected();
+        roleProtected.setListOfprotectedRoles(
+                new String[] { "ADMINISTRATOR", "GN_.*", "ORGADMIN", "REFERENT", "USER", "SUPERUSER" });
+        return roleProtected;
     }
 }

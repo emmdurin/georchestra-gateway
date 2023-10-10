@@ -18,9 +18,7 @@
  */
 package org.georchestra.gateway.autoconfigure.security;
 
-import javax.annotation.PostConstruct;
-
-import org.georchestra.gateway.security.ldap.GeorchestraLdapAccessConfiguration;
+import lombok.extern.slf4j.Slf4j;
 import org.georchestra.gateway.security.ldap.LdapSecurityConfiguration;
 import org.georchestra.gateway.security.ldap.basic.BasicLdapAuthenticationConfiguration;
 import org.georchestra.gateway.security.ldap.extended.ExtendedLdapAuthenticationConfiguration;
@@ -28,7 +26,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import lombok.extern.slf4j.Slf4j;
+import javax.annotation.PostConstruct;
 
 /**
  * {@link EnableAutoConfiguration AutoConfiguration} to set up LDAP security

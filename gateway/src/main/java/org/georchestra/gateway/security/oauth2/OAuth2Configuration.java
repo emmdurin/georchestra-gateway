@@ -110,15 +110,6 @@ public class OAuth2Configuration {
     }
 
     @Bean
-    @ConditionalOnExpression("${georchestra.gateway.security.createNonExistingUsersInLDAP:true} and ${georchestra.gateway.security.ldap.default.enabled:false}")
-    public RoleProtected roleProtected() {
-        RoleProtected roleProtected = new RoleProtected();
-        roleProtected.setListOfprotectedRoles(
-                new String[] { "ADMINISTRATOR", "GN_.*", "ORGADMIN", "REFERENT", "USER", "SUPERUSER" });
-        return roleProtected;
-    }
-
-    @Bean
     ServerHttpSecurityCustomizer oauth2LoginEnablingCustomizer() {
         return new OAuth2AuthenticationCustomizer();
     }
