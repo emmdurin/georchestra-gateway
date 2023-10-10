@@ -110,8 +110,7 @@ public class OAuth2Configuration {
     }
 
     @Bean
-    @ConditionalOnExpression("${georchestra.gateway.security.createNonExistingUsersInLDAP:true}")
-    @Conditional(LdapEnabledCondition.class)
+    @ConditionalOnExpression("${georchestra.gateway.security.createNonExistingUsersInLDAP:true} and ${georchestra.gateway.security.ldap.default.enabled:false}")
     public LdapContextSource singleContextSource(LdapConfigProperties config) {
         ExtendedLdapConfig ldapConfig = config.extendedEnabled().get(0);
         LdapContextSource singleContextSource = new LdapContextSource();
@@ -123,8 +122,7 @@ public class OAuth2Configuration {
     }
 
     @Bean
-    @ConditionalOnExpression("${georchestra.gateway.security.createNonExistingUsersInLDAP:true}")
-    @Conditional(LdapEnabledCondition.class)
+    @ConditionalOnExpression("${georchestra.gateway.security.createNonExistingUsersInLDAP:true} and ${georchestra.gateway.security.ldap.default.enabled:false}")
     public PoolingContextSource contextSource(LdapConfigProperties config, LdapContextSource singleContextSource) {
         ExtendedLdapConfig ldapConfig = config.extendedEnabled().get(0);
         PoolingContextSource contextSource = new PoolingContextSource();
@@ -140,16 +138,14 @@ public class OAuth2Configuration {
     }
 
     @Bean
-    @ConditionalOnExpression("${georchestra.gateway.security.createNonExistingUsersInLDAP:true}")
-    @Conditional(LdapEnabledCondition.class)
+    @ConditionalOnExpression("${georchestra.gateway.security.createNonExistingUsersInLDAP:true} and ${georchestra.gateway.security.ldap.default.enabled:false}")
     public LdapTemplate ldapTemplate(PoolingContextSource contextSource) throws Exception {
         LdapTemplate ldapTemplate = new LdapTemplate(contextSource);
         return ldapTemplate;
     }
 
     @Bean
-    @ConditionalOnExpression("${georchestra.gateway.security.createNonExistingUsersInLDAP:true}")
-    @Conditional(LdapEnabledCondition.class)
+    @ConditionalOnExpression("${georchestra.gateway.security.createNonExistingUsersInLDAP:true} and  ${georchestra.gateway.security.ldap.default.enabled:false}")
     public RoleDao roleDao(LdapTemplate ldapTemplate, LdapConfigProperties config) {
         RoleDaoImpl impl = new RoleDaoImpl();
         impl.setLdapTemplate(ldapTemplate);
@@ -158,8 +154,7 @@ public class OAuth2Configuration {
     }
 
     @Bean
-    @ConditionalOnExpression("${georchestra.gateway.security.createNonExistingUsersInLDAP:true}")
-    @Conditional(LdapEnabledCondition.class)
+    @ConditionalOnExpression("${georchestra.gateway.security.createNonExistingUsersInLDAP:true} and ${georchestra.gateway.security.ldap.default.enabled:false}")
     public AccountDao accountDao(LdapTemplate ldapTemplate, LdapConfigProperties config) throws Exception {
         ExtendedLdapConfig ldapConfig = config.extendedEnabled().get(0);
         String baseDn = ldapConfig.getBaseDn();
@@ -193,8 +188,7 @@ public class OAuth2Configuration {
     }
 
     @Bean
-    @ConditionalOnExpression("${georchestra.gateway.security.createNonExistingUsersInLDAP:true}")
-    @Conditional(LdapEnabledCondition.class)
+    @ConditionalOnExpression("${georchestra.gateway.security.createNonExistingUsersInLDAP:true} and ${georchestra.gateway.security.ldap.default.enabled:false}")
     public RoleProtected roleProtected() {
         RoleProtected roleProtected = new RoleProtected();
         roleProtected.setListOfprotectedRoles(

@@ -20,22 +20,17 @@ package org.georchestra.gateway.security;
 
 import lombok.extern.slf4j.Slf4j;
 import org.georchestra.ds.roles.RoleDao;
-import org.georchestra.ds.security.UsersApiImpl;
 import org.georchestra.ds.users.AccountDao;
-import org.georchestra.ds.users.UserRule;
 import org.georchestra.gateway.model.GatewayConfigProperties;
-import org.georchestra.gateway.security.oauth2.LdapEnabledCondition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.logout.ServerLogoutSuccessHandler;
-import org.georchestra.security.model.GeorchestraUser;
 
 import java.util.List;
 import java.util.Map;
@@ -117,8 +112,7 @@ public class GatewaySecurityConfiguration {
         return new ResolveGeorchestraUserGlobalFilter(resolver);
     }
 
-    @ConditionalOnExpression("${georchestra.gateway.headerAuthentication:false}")
-    @Conditional(LdapEnabledCondition.class)
+    @ConditionalOnExpression("${georchestra.gateway.headerAuthentication:false} and ${georchestra.gateway.security.ldap.default.enabled:false}")
     public @Bean ResolveHttpHeadersGeorchestraUserFilter resolveHttpHeadersGeorchestraUserFilter() {
         return new ResolveHttpHeadersGeorchestraUserFilter();
     }

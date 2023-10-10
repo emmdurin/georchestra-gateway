@@ -32,10 +32,6 @@ import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.web.reactive.function.server.RouterFunction;
-import org.springframework.web.reactive.function.server.RouterFunctions;
-import org.springframework.web.reactive.function.server.ServerResponse;
 
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureBefore(GatewayAutoConfiguration.class)
@@ -67,11 +63,6 @@ public class FiltersAutoConfiguration {
 
     public @Bean StripBasePathGatewayFilterFactory stripBasePathGatewayFilterFactory() {
         return new StripBasePathGatewayFilterFactory();
-    }
-
-    @Bean
-    RouterFunction<ServerResponse> staticResourceRouter() {
-        return RouterFunctions.resources("/**", new ClassPathResource("static/"));
     }
 
 }

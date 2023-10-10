@@ -73,7 +73,7 @@ georchestra:
         # Multiple LDAP data sources are supported. The first key defines a simple
         # name for them. The `default` one here, disabled by default, is pre-configured
         # to use Georchestra's default OpenLDAP database.
-        # You should usually just enable it in the georchestra dataidr's gateway.yml
+        # You should usually just enable it in the georchestra datadir's gateway.yml
         # with georchestra.gateway.security.ldap.default.enabled: true
         default:
           enabled: false
