@@ -71,13 +71,15 @@ import lombok.extern.slf4j.Slf4j;
  * @see LdapConfigProperties
  * @see BasicLdapAuthenticationConfiguration
  * @see ExtendedLdapAuthenticationConfiguration
+ * @see GeorchestraLdapAccessConfiguration
  * @see ActiveDirectoryAuthenticationConfiguration
  */
 @Configuration(proxyBeanMethods = true)
 @EnableConfigurationProperties(LdapConfigProperties.class)
 @Import({ //
         BasicLdapAuthenticationConfiguration.class, //
-        ExtendedLdapAuthenticationConfiguration.class //
+        ExtendedLdapAuthenticationConfiguration.class, //
+        GeorchestraLdapAccessConfiguration.class //
 })
 @Slf4j(topic = "org.georchestra.gateway.security.ldap")
 public class LdapSecurityConfiguration {
