@@ -44,6 +44,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 
 /**
  * {@link GatewayFilterFactory} to remove incoming HTTP request headers whose
@@ -99,7 +100,7 @@ public class RemoveHeadersGatewayFilterFactory extends AbstractGatewayFilterFact
             HttpHeaders incoming = exchange.getRequest().getHeaders();
 
             if (config.anyMatches(incoming) && (!configProps.isHeaderAuthentication()
-                    || !headerAuthenticated(exchange.getRequest().getRemoteAddress().getAddress().toString()))) {
+                    || !headersAreTrusted(exchange.getRequest().getRemoteAddress().getAddress().toString()))) {
                 ServerHttpRequest request = exchange.getRequest().mutate().headers(config::removeMatching).build();
                 exchange = exchange.mutate().request(request).build();
             }
@@ -108,7 +109,11 @@ public class RemoveHeadersGatewayFilterFactory extends AbstractGatewayFilterFact
         };
     }
 
-    private boolean headerAuthenticated(String serverAddress) {
+    private boolean headersAreTrusted(String serverAddress) {
+        // If trustedProxies list is empty, we consider the proxy chain is trusted
+        if (configProps != null && CollectionUtils.isEmpty(configProps.getHeaderTrustedProxies())) {
+            return true;
+        }
         if (configProps != null && !configProps.getHeaderTrustedProxies().isEmpty()
                 && configProps.isHeaderAuthentication()) {
             if (configProps.getHeaderTrustedProxies().stream().filter(e -> serverAddress.contains(e))
