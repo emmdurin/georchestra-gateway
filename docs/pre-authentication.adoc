@@ -25,7 +25,7 @@ The following headers are expected to be received by the Gateway:
 * `sec-georchestra-preauthenticated`: set to `true`
 * `sec-username`: set to the username / user identifier (e.g. "pmauduit")
 * `sec-email`: the email address of the user (e.g. "pierre.mauduit@example.org")
-* `sec-givenname`: the first name of the user (e.g. "Pierre")
+* `sec-firstname`: the first name of the user (e.g. "Pierre")
 * `sec-lastname`: the surname of the user (e.g. "Mauduit")
 * `sec-org`: the organisation identifier (e.g. "geOrchestra")
 
@@ -159,7 +159,7 @@ The following Apache configuration has been used in a setup to interact with the
         RequestHeader set sec-username %{MELLON_EPPN}e "expr=-n env('MELLON_EPPN')"
         RequestHeader set sec-longname %{MELLON_CN}e "expr=-n env('MELLON_CN')"
         RequestHeader set sec-name %{MELLON_SN}e "expr=-n env('MELLON_SN')"
-        RequestHeader set sec-givenname %{MELLON_GIVEN_NAME}e "expr=-n env('MELLON_GIVEN_NAME')"
+        RequestHeader set sec-firstname %{MELLON_GIVEN_NAME}e "expr=-n env('MELLON_GIVEN_NAME')"
         RequestHeader set sec-email %{MELLON_MAIL}e "expr=-n env('MELLON_MAIL')"
         RequestHeader set sec-org %{MELLON_O}e "expr=-n env('MELLON_O')"
 
