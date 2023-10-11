@@ -8,12 +8,6 @@ volumes:
       o: bind
       device: $PWD/datadir
 
-secrets:
-  slapd_password:
-    file: ./datadir/secrets/slapd_password.txt
-  geoserver_privileged_user_passwd:
-    file: ./datadir/secrets/geoserver_privileged_user_passwd.txt
-
 services:
   database:
     image: georchestra/database:latest
@@ -28,9 +22,6 @@ services:
 
   ldap:
     image: georchestra/ldap:latest
-    secrets:
-      - slapd_password
-      - geoserver_privileged_user_passwd
     environment:
         - SLAPD_ORGANISATION=georchestra
         - SLAPD_DOMAIN=georchestra.org
