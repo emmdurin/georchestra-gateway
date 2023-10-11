@@ -2,6 +2,7 @@ package org.georchestra.gateway.security.ldap;
 
 import org.georchestra.ds.orgs.OrgsDao;
 import org.georchestra.ds.users.AccountDao;
+import org.georchestra.gateway.security.ldap.accounts.GeorchestraLdapAccessConfiguration;
 import org.georchestra.gateway.security.ldap.basic.BasicLdapAuthenticationConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.context.annotation.UserConfigurations;

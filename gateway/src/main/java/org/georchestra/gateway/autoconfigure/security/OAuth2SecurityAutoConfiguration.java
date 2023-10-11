@@ -21,13 +21,14 @@ package org.georchestra.gateway.autoconfigure.security;
 import javax.annotation.PostConstruct;
 
 import org.georchestra.gateway.security.oauth2.OAuth2Configuration;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @Slf4j(topic = "org.georchestra.gateway.autoconfigure.security")
 @Import({ OAuth2SecurityAutoConfiguration.Enabled.class, OAuth2SecurityAutoConfiguration.Disabled.class })
 public class OAuth2SecurityAutoConfiguration {

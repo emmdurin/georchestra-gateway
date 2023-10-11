@@ -18,12 +18,12 @@
  */
 package org.georchestra.gateway.security;
 
-import lombok.extern.slf4j.Slf4j;
-import org.georchestra.ds.roles.RoleDao;
-import org.georchestra.ds.users.AccountDao;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
+
 import org.georchestra.gateway.model.GatewayConfigProperties;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,9 +32,7 @@ import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.logout.ServerLogoutSuccessHandler;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Stream;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * {@link Configuration} to initialize the Gateway's
@@ -60,18 +58,11 @@ public class GatewaySecurityConfiguration {
      * configure the different aspects of the {@link ServerHttpSecurity} used to
      * {@link ServerHttpSecurity#build build} the {@link SecurityWebFilterChain}.
      */
-
     @Autowired(required = false)
     ServerLogoutSuccessHandler oidcLogoutSuccessHandler;
 
-    @Autowired(required = false)
-    private AccountDao accountDao;
-
-    @Autowired(required = false)
-    private RoleDao roleDao;
-
     @Bean
-    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http,
+    SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http,
             List<ServerHttpSecurityCustomizer> customizers) throws Exception {
 
         log.info("Initializing security filter chain...");
@@ -103,25 +94,23 @@ public class GatewaySecurityConfiguration {
         return customizers.stream().sorted((c1, c2) -> Integer.compare(c1.getOrder(), c2.getOrder()));
     }
 
-    public @Bean GeorchestraUserMapper georchestraUserResolver(List<GeorchestraUserMapperExtension> resolvers,
+    @Bean
+    GeorchestraUserMapper georchestraUserResolver(List<GeorchestraUserMapperExtension> resolvers,
             List<GeorchestraUserCustomizerExtension> customizers) {
         return new GeorchestraUserMapper(resolvers, customizers);
     }
 
-    public @Bean ResolveGeorchestraUserGlobalFilter resolveGeorchestraUserGlobalFilter(GeorchestraUserMapper resolver) {
+    @Bean
+    ResolveGeorchestraUserGlobalFilter resolveGeorchestraUserGlobalFilter(GeorchestraUserMapper resolver) {
         return new ResolveGeorchestraUserGlobalFilter(resolver);
-    }
-
-    @ConditionalOnExpression("${georchestra.gateway.headerAuthentication:false} and ${georchestra.gateway.security.ldap.default.enabled:false}")
-    public @Bean ResolveHttpHeadersGeorchestraUserFilter resolveHttpHeadersGeorchestraUserFilter() {
-        return new ResolveHttpHeadersGeorchestraUserFilter();
     }
 
     /**
      * Extension to make {@link GeorchestraUserMapper} append user roles based on
      * {@link GatewayConfigProperties#getRolesMappings()}
      */
-    public @Bean RolesMappingsUserCustomizer rolesMappingsUserCustomizer(GatewayConfigProperties config) {
+    @Bean
+    RolesMappingsUserCustomizer rolesMappingsUserCustomizer(GatewayConfigProperties config) {
         Map<String, List<String>> rolesMappings = config.getRolesMappings();
         log.info("Creating {}", RolesMappingsUserCustomizer.class.getSimpleName());
         return new RolesMappingsUserCustomizer(rolesMappings);

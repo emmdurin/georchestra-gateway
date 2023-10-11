@@ -25,15 +25,15 @@ import org.georchestra.gateway.model.GeorchestraTargetConfig;
 import org.geoserver.cloud.gateway.filter.RouteProfileGatewayFilterFactory;
 import org.geoserver.cloud.gateway.filter.StripBasePathGatewayFilterFactory;
 import org.geoserver.cloud.gateway.predicate.RegExpQueryRoutePredicateFactory;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.gateway.config.GatewayAutoConfiguration;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @AutoConfigureBefore(GatewayAutoConfiguration.class)
 @Import(HeaderFiltersConfiguration.class)
 @EnableConfigurationProperties(GatewayConfigProperties.class)

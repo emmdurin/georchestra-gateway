@@ -1,7 +1,7 @@
-package org.georchestra.gateway.security.ldap;
+package org.georchestra.gateway.security.ldap.accounts;
 
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import static java.util.Objects.requireNonNull;
+
 import org.georchestra.ds.orgs.OrgsDao;
 import org.georchestra.ds.orgs.OrgsDaoImpl;
 import org.georchestra.ds.roles.RoleDao;
@@ -9,8 +9,8 @@ import org.georchestra.ds.roles.RoleDaoImpl;
 import org.georchestra.ds.roles.RoleProtected;
 import org.georchestra.ds.users.AccountDao;
 import org.georchestra.ds.users.AccountDaoImpl;
+import org.georchestra.gateway.security.ldap.LdapConfigProperties;
 import org.georchestra.gateway.security.ldap.extended.ExtendedLdapConfig;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,17 +19,22 @@ import org.springframework.ldap.core.support.LdapContextSource;
 import org.springframework.ldap.pool.factory.PoolingContextSource;
 import org.springframework.ldap.pool.validation.DefaultDirContextValidator;
 
-import static java.util.Objects.requireNonNull;
-
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(LdapConfigProperties.class)
-@Slf4j(topic = "org.georchestra.gateway.security.ldap")
-@NoArgsConstructor
 public class GeorchestraLdapAccessConfiguration {
 
+    /**
+     * Filter to create LDAP accounts if pre-authentication and the default LDAP
+     * database are enabled
+     */
     @Bean
-    @ConditionalOnExpression("${georchestra.gateway.security.createNonExistingUsersInLDAP:true} and ${georchestra.gateway.security.ldap.default.enabled:false}")
-    public LdapContextSource singleContextSource(LdapConfigProperties config) {
+    CreateNonExistingPreauthUserFilter createNonExistingPreauthUserFilter(LdapConfigProperties config,
+            AccountDao accountDao, RoleDao roleDao) {
+        return new CreateNonExistingPreauthUserFilter(config, accountDao, roleDao);
+    }
+
+    @Bean
+    LdapContextSource singleContextSource(LdapConfigProperties config) {
         ExtendedLdapConfig ldapConfig = config.extendedEnabled().get(0);
         LdapContextSource singleContextSource = new LdapContextSource();
         singleContextSource.setUrl(ldapConfig.getUrl());
@@ -40,9 +45,7 @@ public class GeorchestraLdapAccessConfiguration {
     }
 
     @Bean
-    @ConditionalOnExpression("${georchestra.gateway.security.createNonExistingUsersInLDAP:true} and ${georchestra.gateway.security.ldap.default.enabled:false}")
-    public PoolingContextSource contextSource(LdapConfigProperties config, LdapContextSource singleContextSource) {
-        ExtendedLdapConfig ldapConfig = config.extendedEnabled().get(0);
+    PoolingContextSource contextSource(LdapConfigProperties config, LdapContextSource singleContextSource) {
         PoolingContextSource contextSource = new PoolingContextSource();
         contextSource.setContextSource(singleContextSource);
         contextSource.setDirContextValidator(new DefaultDirContextValidator());
@@ -56,15 +59,13 @@ public class GeorchestraLdapAccessConfiguration {
     }
 
     @Bean
-    @ConditionalOnExpression("${georchestra.gateway.security.createNonExistingUsersInLDAP:true} and ${georchestra.gateway.security.ldap.default.enabled:false}")
-    public LdapTemplate ldapTemplate(PoolingContextSource contextSource) throws Exception {
+    LdapTemplate ldapTemplate(PoolingContextSource contextSource) throws Exception {
         LdapTemplate ldapTemplate = new LdapTemplate(contextSource);
         return ldapTemplate;
     }
 
     @Bean
-    @ConditionalOnExpression("${georchestra.gateway.security.createNonExistingUsersInLDAP:true} and ${georchestra.gateway.security.ldap.default.enabled:false}")
-    public RoleDao roleDao(LdapTemplate ldapTemplate, LdapConfigProperties config) {
+    RoleDao roleDao(LdapTemplate ldapTemplate, LdapConfigProperties config) {
         RoleDaoImpl impl = new RoleDaoImpl();
         impl.setLdapTemplate(ldapTemplate);
         impl.setRoleSearchBaseDN(config.extendedEnabled().get(0).getRolesRdn());
@@ -72,8 +73,7 @@ public class GeorchestraLdapAccessConfiguration {
     }
 
     @Bean
-    @ConditionalOnExpression("${georchestra.gateway.security.createNonExistingUsersInLDAP:true} and ${georchestra.gateway.security.ldap.default.enabled:false}")
-    public OrgsDao orgsDao(LdapTemplate ldapTemplate, LdapConfigProperties config) {
+    OrgsDao orgsDao(LdapTemplate ldapTemplate, LdapConfigProperties config) {
         OrgsDaoImpl impl = new OrgsDaoImpl();
         impl.setLdapTemplate(ldapTemplate);
         impl.setOrgSearchBaseDN(config.extendedEnabled().get(0).getOrgsRdn());
@@ -81,8 +81,7 @@ public class GeorchestraLdapAccessConfiguration {
     }
 
     @Bean
-    @ConditionalOnExpression("${georchestra.gateway.security.createNonExistingUsersInLDAP:true} and ${georchestra.gateway.security.ldap.default.enabled:false}")
-    public AccountDao accountDao(LdapTemplate ldapTemplate, LdapConfigProperties config) throws Exception {
+    AccountDao accountDao(LdapTemplate ldapTemplate, LdapConfigProperties config) throws Exception {
         ExtendedLdapConfig ldapConfig = config.extendedEnabled().get(0);
         String baseDn = ldapConfig.getBaseDn();
         String userSearchBaseDN = ldapConfig.getUsersRdn();
@@ -115,8 +114,7 @@ public class GeorchestraLdapAccessConfiguration {
     }
 
     @Bean
-    @ConditionalOnExpression("${georchestra.gateway.security.createNonExistingUsersInLDAP:true} and ${georchestra.gateway.security.ldap.default.enabled:false}")
-    public RoleProtected roleProtected() {
+    RoleProtected roleProtected() {
         RoleProtected roleProtected = new RoleProtected();
         roleProtected.setListOfprotectedRoles(
                 new String[] { "ADMINISTRATOR", "GN_.*", "ORGADMIN", "REFERENT", "USER", "SUPERUSER" });

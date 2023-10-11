@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 by the geOrchestra PSC
+ * Copyright (C) 2023 by the geOrchestra PSC
  *
  * This file is part of geOrchestra.
  *
@@ -18,14 +18,22 @@
  */
 package org.georchestra.gateway.autoconfigure.security;
 
-import org.georchestra.gateway.security.GatewaySecurityConfiguration;
-import org.georchestra.gateway.security.accessrules.AccessRulesConfiguration;
+import org.georchestra.gateway.security.preauth.ResolveHttpHeadersGeorchestraUserFilter;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.security.ConditionalOnDefaultWebSecurity;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Bean;
 
+/**
+ */
 @AutoConfiguration
-@ConditionalOnDefaultWebSecurity
-@Import({ GatewaySecurityConfiguration.class, AccessRulesConfiguration.class })
-public class WebSecurityAutoConfiguration {
+@ConditionalOnHeaderPreAuthentication
+public class PreAuthenticationAutoConfiguration {
+
+    /**
+     * Filter to enable pre-authentication from a trusted proxy
+     */
+    @Bean
+    ResolveHttpHeadersGeorchestraUserFilter resolveHttpHeadersGeorchestraUserFilter() {
+        return new ResolveHttpHeadersGeorchestraUserFilter();
+    }
+
 }

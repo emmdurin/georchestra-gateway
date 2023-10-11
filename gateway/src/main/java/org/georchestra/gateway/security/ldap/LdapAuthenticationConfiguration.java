@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.georchestra.gateway.security.ServerHttpSecurityCustomizer;
+import org.georchestra.gateway.security.ldap.accounts.GeorchestraLdapAccessConfiguration;
 import org.georchestra.gateway.security.ldap.basic.BasicLdapAuthenticationConfiguration;
 import org.georchestra.gateway.security.ldap.basic.BasicLdapAuthenticationProvider;
 import org.georchestra.gateway.security.ldap.extended.ExtendedLdapAuthenticationConfiguration;
@@ -78,11 +79,9 @@ import lombok.extern.slf4j.Slf4j;
 @EnableConfigurationProperties(LdapConfigProperties.class)
 @Import({ //
         BasicLdapAuthenticationConfiguration.class, //
-        ExtendedLdapAuthenticationConfiguration.class, //
-        GeorchestraLdapAccessConfiguration.class //
-})
+        ExtendedLdapAuthenticationConfiguration.class })
 @Slf4j(topic = "org.georchestra.gateway.security.ldap")
-public class LdapSecurityConfiguration {
+public class LdapAuthenticationConfiguration {
 
     public static final class LDAPAuthenticationCustomizer implements ServerHttpSecurityCustomizer {
         public @Override void customize(ServerHttpSecurity http) {

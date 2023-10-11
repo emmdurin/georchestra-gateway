@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 by the geOrchestra PSC
+ * Copyright (C) 2023 by the geOrchestra PSC
  *
  * This file is part of geOrchestra.
  *
@@ -16,16 +16,25 @@
  * You should have received a copy of the GNU General Public License along with
  * geOrchestra.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.georchestra.gateway.autoconfigure.security;
 
-import org.georchestra.gateway.security.GatewaySecurityConfiguration;
-import org.georchestra.gateway.security.accessrules.AccessRulesConfiguration;
-import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.security.ConditionalOnDefaultWebSecurity;
-import org.springframework.context.annotation.Import;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-@AutoConfiguration
-@ConditionalOnDefaultWebSecurity
-@Import({ GatewaySecurityConfiguration.class, AccessRulesConfiguration.class })
-public class WebSecurityAutoConfiguration {
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+
+/**
+ *
+ */
+@Target({ ElementType.TYPE, ElementType.METHOD })
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@ConditionalOnLdapEnabled
+@ConditionalOnProperty(name = "georchestra.gateway.security.createNonExistingUsersInLDAP", havingValue = "true", matchIfMissing = false)
+public @interface ConditionalOnDefaultGeorchestraLdapEnabled {
+
 }

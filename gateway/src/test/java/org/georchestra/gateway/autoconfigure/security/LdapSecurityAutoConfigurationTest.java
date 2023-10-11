@@ -22,8 +22,8 @@ package org.georchestra.gateway.autoconfigure.security;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.georchestra.gateway.security.ldap.LdapConfigProperties;
-import org.georchestra.gateway.security.ldap.LdapSecurityConfiguration;
-import org.georchestra.gateway.security.ldap.LdapSecurityConfiguration.LDAPAuthenticationCustomizer;
+import org.georchestra.gateway.security.ldap.LdapAuthenticationConfiguration;
+import org.georchestra.gateway.security.ldap.LdapAuthenticationConfiguration.LDAPAuthenticationCustomizer;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -33,7 +33,7 @@ import org.springframework.security.web.server.authentication.AuthenticationWebF
 
 /**
  * Assert context contributions of {@link LdapSecurityAutoConfiguration} /
- * {@link LdapSecurityConfiguration}
+ * {@link LdapAuthenticationConfiguration}
  *
  */
 class LdapSecurityAutoConfigurationTest {
