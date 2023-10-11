@@ -159,9 +159,10 @@ The following Apache configuration has been used in a setup to interact with the
         RequestHeader set sec-username %{MELLON_EPPN}e "expr=-n env('MELLON_EPPN')"
         RequestHeader set sec-longname %{MELLON_CN}e "expr=-n env('MELLON_CN')"
         RequestHeader set sec-name %{MELLON_SN}e "expr=-n env('MELLON_SN')"
-        RequestHeader set sec-firstname %{MELLON_GIVEN_NAME}e "expr=-n env('MELLON_GIVEN_NAME')"
         RequestHeader set sec-email %{MELLON_MAIL}e "expr=-n env('MELLON_MAIL')"
         RequestHeader set sec-org %{MELLON_O}e "expr=-n env('MELLON_O')"
+        RequestHeader set sec-firstname %{MELLON_GIVEN_NAME}e "expr=-n env('MELLON_GIVEN_NAME')"
+        RequestHeader set sec-lastname %{MELLON_SN}e "expr=-n env('MELLON_SN')"
 
         ProxyPass "http://georchestra-gateway-svc:8080/"
         ProxyPassReverse "http://georchestra-gateway-svc:8080/"
