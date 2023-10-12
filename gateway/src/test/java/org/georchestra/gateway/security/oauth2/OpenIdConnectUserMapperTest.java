@@ -42,7 +42,7 @@ import com.nimbusds.oauth2.sdk.ParseException;
 import com.nimbusds.oauth2.sdk.util.JSONUtils;
 
 /**
- *
+ * 
  */
 class OpenIdConnectUserMapperTest {
 

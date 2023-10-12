@@ -15,7 +15,7 @@ server:
   ssl:
     enabled: false
     #TODO: configure SSL with a self-signed certificate
-    
+
 spring:
   config:
     import: optional:file:${georchestra.datadir}/default.properties,optional:file:${georchestra.datadir}/gateway/gateway.yaml,optional:file:${georchestra.datadir}/gateway/security.yaml
