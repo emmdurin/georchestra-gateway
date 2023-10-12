@@ -49,27 +49,6 @@ class OAuth2SecurityAutoConfigurationTest {
     private ApplicationContextRunner runner = new ApplicationContextRunner()
             .withConfiguration(AutoConfigurations.of(OAuth2SecurityAutoConfiguration.class));
 
-    @BeforeEach
-    void setUp() throws Exception {
-        assumeTrue(System.getProperty("console.test.openldap.ldapurl") != null
-                && System.getProperty("console.test.openldap.basedn") != null);
-
-        String ldapUrl = System.getProperty("console.test.openldap.ldapurl");
-        String baseDn = System.getProperty("console.test.openldap.basedn");
-
-        DefaultSpringSecurityContextSource contextSource = new DefaultSpringSecurityContextSource(ldapUrl + baseDn);
-        contextSource.setBase(baseDn);
-        contextSource.setUrl(ldapUrl);
-        contextSource.setBaseEnvironmentProperties(new HashMap<String, Object>());
-        contextSource.setAnonymousReadOnly(true);
-        contextSource.setCacheEnvironmentProperties(false);
-
-        LdapTemplate ldapTemplate = new LdapTemplate(contextSource);
-
-        AccountDaoImpl accountDaoImpl = new AccountDaoImpl(ldapTemplate);
-        accountDaoImpl.setUserSearchBaseDN("ou=users");
-    }
-
     @Test
     void testDisabledByDefault() {
         testDisabled(runner);
