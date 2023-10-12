@@ -11,11 +11,6 @@ spring:
         - Path=/
         filters:
         - RewritePath=/, /header
-      - id: loginredirect
-        uri: no://op
-        predicates:
-        - QueryParam=login
-        anonymous: false
       - id: header
         uri: ${georchestra.gateway.services.header.target}
         predicates:
