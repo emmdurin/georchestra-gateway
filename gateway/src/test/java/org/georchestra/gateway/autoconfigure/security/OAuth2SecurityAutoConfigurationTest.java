@@ -20,22 +20,18 @@
 package org.georchestra.gateway.autoconfigure.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
-import java.util.HashMap;
 import java.util.List;
 
-import org.georchestra.ds.users.AccountDaoImpl;
 import org.georchestra.gateway.security.oauth2.OAuth2Configuration.OAuth2AuthenticationCustomizer;
 import org.georchestra.gateway.security.oauth2.OAuth2ProxyConfigProperties;
 import org.georchestra.gateway.security.oauth2.OpenIdConnectCustomClaimsConfigProperties;
 import org.georchestra.gateway.security.oauth2.OpenIdConnectCustomClaimsConfigProperties.RolesMapping;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
-import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.ldap.core.LdapTemplate;
-import org.springframework.security.ldap.DefaultSpringSecurityContextSource;
+import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration;
+import org.springframework.boot.test.context.runner.ReactiveWebApplicationContextRunner;
+import org.springframework.cloud.gateway.config.GatewayReactiveOAuth2AutoConfiguration;
 import org.springframework.security.oauth2.client.endpoint.ReactiveOAuth2AccessTokenResponseClient;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcReactiveOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.DefaultReactiveOAuth2UserService;
@@ -46,7 +42,7 @@ import org.springframework.security.oauth2.client.userinfo.ReactiveOAuth2UserSer
  *
  */
 class OAuth2SecurityAutoConfigurationTest {
-    private ApplicationContextRunner runner = new ApplicationContextRunner()
+    private ReactiveWebApplicationContextRunner runner = new ReactiveWebApplicationContextRunner()
             .withConfiguration(AutoConfigurations.of(OAuth2SecurityAutoConfiguration.class));
 
     @Test
@@ -125,7 +121,7 @@ class OAuth2SecurityAutoConfigurationTest {
         ;
     }
 
-    private void testDisabled(ApplicationContextRunner runner) {
+    private void testDisabled(ReactiveWebApplicationContextRunner runner) {
         runner.run(context -> {
             assertThat(context).doesNotHaveBean(OAuth2ProxyConfigProperties.class);
             assertThat(context).doesNotHaveBean(OAuth2AuthenticationCustomizer.class);

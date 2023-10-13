@@ -18,27 +18,21 @@
  */
 package org.georchestra.gateway.security.oauth2;
 
-import com.nimbusds.jwt.JWT;
-import com.nimbusds.jwt.JWTParser;
-import org.georchestra.ds.roles.RoleDao;
-import org.georchestra.ds.roles.RoleDaoImpl;
-import org.georchestra.ds.roles.RoleProtected;
-import org.georchestra.ds.users.AccountDao;
-import org.georchestra.ds.users.AccountDaoImpl;
+import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
+import java.util.Arrays;
+import java.util.Collections;
+
+import javax.crypto.spec.SecretKeySpec;
+
 import org.georchestra.gateway.security.ServerHttpSecurityCustomizer;
 import org.georchestra.gateway.security.ldap.LdapConfigProperties;
-import org.georchestra.gateway.security.ldap.extended.ExtendedLdapConfig;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
-import org.springframework.ldap.core.LdapTemplate;
-import org.springframework.ldap.core.support.LdapContextSource;
-import org.springframework.ldap.pool.factory.PoolingContextSource;
-import org.springframework.ldap.pool.validation.DefaultDirContextValidator;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity.OAuth2LoginSpec;
@@ -57,18 +51,12 @@ import org.springframework.security.oauth2.jwt.ReactiveJwtDecoderFactory;
 import org.springframework.security.web.server.authentication.logout.ServerLogoutSuccessHandler;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.nimbusds.jwt.JWT;
+import com.nimbusds.jwt.JWTParser;
+
 import lombok.extern.slf4j.Slf4j;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.transport.ProxyProvider;
-
-import javax.crypto.spec.SecretKeySpec;
-import java.lang.reflect.Field;
-import java.nio.charset.StandardCharsets;
-import java.text.ParseException;
-import java.util.Arrays;
-import java.util.Collections;
-
-import static java.util.Objects.requireNonNull;
 
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties({ OAuth2ProxyConfigProperties.class, OpenIdConnectCustomClaimsConfigProperties.class,
@@ -84,8 +72,13 @@ public class OAuth2Configuration {
         }
     }
 
-    @Bean
-    private ServerLogoutSuccessHandler oidcLogoutSuccessHandler(
+    /**
+     * TODO: REVISIT, we don't know why this bean has been added, but it breaks
+     * OAuth2SecurityAutoConfigurationTest as there's no
+     * InMemoryReactiveClientRegistrationRepository
+     */
+    // @Bean
+    ServerLogoutSuccessHandler oidcLogoutSuccessHandler(
             InMemoryReactiveClientRegistrationRepository clientRegistrationRepository,
             ExtendedOAuth2ClientProperties properties) {
         OidcClientInitiatedServerLogoutSuccessHandler oidcLogoutSuccessHandler = new OidcClientInitiatedServerLogoutSuccessHandler(

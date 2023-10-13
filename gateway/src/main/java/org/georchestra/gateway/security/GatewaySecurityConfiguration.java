@@ -29,6 +29,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.config.web.server.ServerHttpSecurity.LogoutSpec;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.logout.ServerLogoutSuccessHandler;
 
@@ -53,14 +54,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j(topic = "org.georchestra.gateway.security")
 public class GatewaySecurityConfiguration {
 
+    @Autowired(required = false)
+    ServerLogoutSuccessHandler oidcLogoutSuccessHandler;
+
     /**
      * Relies on available {@link ServerHttpSecurityCustomizer} extensions to
      * configure the different aspects of the {@link ServerHttpSecurity} used to
      * {@link ServerHttpSecurity#build build} the {@link SecurityWebFilterChain}.
      */
-    @Autowired(required = false)
-    ServerLogoutSuccessHandler oidcLogoutSuccessHandler;
-
     @Bean
     SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http,
             List<ServerHttpSecurityCustomizer> customizers) throws Exception {
@@ -82,12 +83,12 @@ public class GatewaySecurityConfiguration {
 
         log.info("Security filter chain initialized");
 
+        LogoutSpec logoutUrl = http.formLogin().loginPage("/login").and().logout().logoutUrl("/logout");
         if (oidcLogoutSuccessHandler != null) {
-            return http.formLogin().loginPage("/login").and().logout().logoutUrl("/logout")
-                    .logoutSuccessHandler(oidcLogoutSuccessHandler).and().build();
-        } else {
-            return http.formLogin().loginPage("/login").and().logout().logoutUrl("/logout").and().build();
+            logoutUrl = logoutUrl.logoutSuccessHandler(oidcLogoutSuccessHandler);
         }
+
+        return logoutUrl.and().build();
     }
 
     private Stream<ServerHttpSecurityCustomizer> sortedCustomizers(List<ServerHttpSecurityCustomizer> customizers) {
