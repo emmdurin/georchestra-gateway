@@ -27,6 +27,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.security.authentication.DelegatingReactiveAuthenticationManager;
+import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity.LogoutSpec;
@@ -56,6 +59,12 @@ public class GatewaySecurityConfiguration {
 
     @Autowired(required = false)
     ServerLogoutSuccessHandler oidcLogoutSuccessHandler;
+
+//	@Primary
+//	@Bean
+//	ReactiveAuthenticationManager authManagerDelegator(List<ReactiveAuthenticationManager> managers) {
+//		return new DelegatingReactiveAuthenticationManager(managers);
+//	}
 
     /**
      * Relies on available {@link ServerHttpSecurityCustomizer} extensions to

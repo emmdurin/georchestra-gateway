@@ -18,7 +18,8 @@
  */
 package org.georchestra.gateway.autoconfigure.security;
 
-import org.georchestra.gateway.security.preauth.ResolveHttpHeadersGeorchestraUserFilter;
+import org.georchestra.gateway.security.preauth.PreauthGatewaySecurityCustomizer;
+import org.georchestra.gateway.security.preauth.PreauthenticatedUserMapperExtension;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
 
@@ -28,12 +29,22 @@ import org.springframework.context.annotation.Bean;
 @ConditionalOnHeaderPreAuthentication
 public class PreAuthenticationAutoConfiguration {
 
+    @Bean
+    PreauthGatewaySecurityCustomizer preauthGatewaySecurityCustomizer() {
+        return new PreauthGatewaySecurityCustomizer();
+    }
+
+    @Bean
+    PreauthenticatedUserMapperExtension preauthenticatedUserMapperExtension() {
+        return new PreauthenticatedUserMapperExtension();
+    }
+
     /**
      * Filter to enable pre-authentication from a trusted proxy
      */
-    @Bean
-    ResolveHttpHeadersGeorchestraUserFilter resolveHttpHeadersGeorchestraUserFilter() {
-        return new ResolveHttpHeadersGeorchestraUserFilter();
-    }
+//    @Bean
+//    ResolveHttpHeadersGeorchestraUserFilter resolveHttpHeadersGeorchestraUserFilter() {
+//        return new ResolveHttpHeadersGeorchestraUserFilter();
+//    }
 
 }
