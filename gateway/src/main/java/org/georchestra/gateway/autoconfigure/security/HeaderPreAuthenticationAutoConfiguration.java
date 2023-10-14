@@ -18,33 +18,22 @@
  */
 package org.georchestra.gateway.autoconfigure.security;
 
-import org.georchestra.gateway.security.preauth.PreauthGatewaySecurityCustomizer;
-import org.georchestra.gateway.security.preauth.PreauthenticatedUserMapperExtension;
+import org.georchestra.gateway.security.preauth.HeaderPreAuthenticationConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 
 /**
+ * {@link AutoConfiguration @AutoConfiguration} to enable request headers
+ * pre-authentication.
+ * <p>
+ * This feature shall be enabled through the
+ * {@code georchestra.gateway.headerAuthentication=true} config property.
+ * 
+ * @see ConditionalOnHeaderPreAuthentication
+ * @see HeaderPreAuthenticationConfiguration
  */
 @AutoConfiguration
 @ConditionalOnHeaderPreAuthentication
-public class PreAuthenticationAutoConfiguration {
-
-    @Bean
-    PreauthGatewaySecurityCustomizer preauthGatewaySecurityCustomizer() {
-        return new PreauthGatewaySecurityCustomizer();
-    }
-
-    @Bean
-    PreauthenticatedUserMapperExtension preauthenticatedUserMapperExtension() {
-        return new PreauthenticatedUserMapperExtension();
-    }
-
-    /**
-     * Filter to enable pre-authentication from a trusted proxy
-     */
-//    @Bean
-//    ResolveHttpHeadersGeorchestraUserFilter resolveHttpHeadersGeorchestraUserFilter() {
-//        return new ResolveHttpHeadersGeorchestraUserFilter();
-//    }
-
+@Import(HeaderPreAuthenticationConfiguration.class)
+public class HeaderPreAuthenticationAutoConfiguration {
 }

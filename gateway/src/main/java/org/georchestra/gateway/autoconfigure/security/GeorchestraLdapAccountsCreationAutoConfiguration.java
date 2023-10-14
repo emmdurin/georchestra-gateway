@@ -22,6 +22,11 @@ import org.georchestra.gateway.security.ldap.accounts.GeorchestraLdapAccessConfi
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Import;
 
+/**
+ * {@link AutoConfiguration @AutoConfiguration}
+ * 
+ * @see ConditionalOnCreateLdapAccounts
+ */
 @AutoConfiguration
 @ConditionalOnCreateLdapAccounts
 @Import(GeorchestraLdapAccessConfiguration.class)
