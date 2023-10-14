@@ -21,9 +21,9 @@ package org.georchestra.gateway.autoconfigure.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.georchestra.gateway.security.ldap.LdapConfigProperties;
 import org.georchestra.gateway.security.ldap.LdapAuthenticationConfiguration;
 import org.georchestra.gateway.security.ldap.LdapAuthenticationConfiguration.LDAPAuthenticationCustomizer;
+import org.georchestra.gateway.security.ldap.LdapConfigProperties;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;

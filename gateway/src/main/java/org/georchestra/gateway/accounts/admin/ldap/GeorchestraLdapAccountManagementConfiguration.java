@@ -1,17 +1,45 @@
-package org.georchestra.gateway.security.ldap.accounts;
+/*
+ * Copyright (C) 2023 by the geOrchestra PSC
+ *
+ * This file is part of geOrchestra.
+ *
+ * geOrchestra is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * geOrchestra is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * geOrchestra.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.georchestra.gateway.accounts.admin.ldap;
 
 import static java.util.Objects.requireNonNull;
+
+import java.util.Collections;
+import java.util.List;
 
 import org.georchestra.ds.orgs.OrgsDao;
 import org.georchestra.ds.orgs.OrgsDaoImpl;
 import org.georchestra.ds.roles.RoleDao;
 import org.georchestra.ds.roles.RoleDaoImpl;
 import org.georchestra.ds.roles.RoleProtected;
+import org.georchestra.ds.security.UserMapperImpl;
+import org.georchestra.ds.security.UsersApiImpl;
 import org.georchestra.ds.users.AccountDao;
 import org.georchestra.ds.users.AccountDaoImpl;
+import org.georchestra.ds.users.UserRule;
+import org.georchestra.gateway.accounts.admin.AccountManager;
+import org.georchestra.gateway.accounts.admin.CreateAccountUserCustomizer;
 import org.georchestra.gateway.security.ldap.LdapConfigProperties;
 import org.georchestra.gateway.security.ldap.extended.ExtendedLdapConfig;
+import org.georchestra.security.api.UsersApi;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.ldap.core.LdapTemplate;
@@ -21,16 +49,33 @@ import org.springframework.ldap.pool.validation.DefaultDirContextValidator;
 
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(LdapConfigProperties.class)
-public class GeorchestraLdapAccessConfiguration {
+public class GeorchestraLdapAccountManagementConfiguration {
 
-    /**
-     * Filter to create LDAP accounts if pre-authentication and the default LDAP
-     * database are enabled
-     */
     @Bean
-    CreateNonExistingPreauthUserFilter createNonExistingPreauthUserFilter(LdapConfigProperties config,
+    AccountManager ldapAccountsManager(//
+            ApplicationEventPublisher eventPublisher, //
             AccountDao accountDao, RoleDao roleDao) {
-        return new CreateNonExistingPreauthUserFilter(config, accountDao, roleDao);
+
+        UsersApi usersApi = ldapUsersApi(accountDao, roleDao);
+        return new LdapAccountsManager(eventPublisher::publishEvent, accountDao, roleDao, usersApi);
+    }
+
+    @Bean
+    CreateAccountUserCustomizer createAccountUserCustomizer(AccountManager accountManager) {
+        return new CreateAccountUserCustomizer(accountManager);
+    }
+
+    private UsersApi ldapUsersApi(AccountDao accountDao, RoleDao roleDao) {
+        UserMapperImpl mapper = new UserMapperImpl();
+        mapper.setRoleDao(roleDao);
+        List<String> protectedUsers = Collections.emptyList();
+        UserRule rule = new UserRule();
+        rule.setListOfprotectedUsers(protectedUsers.toArray(String[]::new));
+        UsersApiImpl usersApi = new UsersApiImpl();
+        usersApi.setAccountsDao(accountDao);
+        usersApi.setMapper(mapper);
+        usersApi.setUserRule(rule);
+        return usersApi;
     }
 
     @Bean
@@ -45,7 +90,7 @@ public class GeorchestraLdapAccessConfiguration {
     }
 
     @Bean
-    PoolingContextSource contextSource(LdapConfigProperties config, LdapContextSource singleContextSource) {
+    PoolingContextSource contextSource(LdapContextSource singleContextSource) {
         PoolingContextSource contextSource = new PoolingContextSource();
         contextSource.setContextSource(singleContextSource);
         contextSource.setDirContextValidator(new DefaultDirContextValidator());

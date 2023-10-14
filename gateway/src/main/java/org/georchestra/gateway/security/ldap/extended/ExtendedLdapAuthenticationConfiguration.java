@@ -50,7 +50,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.LdapContextSource;
-import org.springframework.security.ldap.authentication.LdapAuthenticationProvider;
 import org.springframework.security.ldap.userdetails.LdapUserDetails;
 
 import lombok.extern.slf4j.Slf4j;
@@ -69,7 +68,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ExtendedLdapAuthenticationConfiguration {
 
     @Bean
-    public GeorchestraLdapAuthenticatedUserMapper georchestraLdapAuthenticatedUserMapper(DemultiplexingUsersApi users) {
+    GeorchestraLdapAuthenticatedUserMapper georchestraLdapAuthenticatedUserMapper(DemultiplexingUsersApi users) {
         return users.getTargetNames().isEmpty() ? null : new GeorchestraLdapAuthenticatedUserMapper(users);
     }
 

@@ -1,14 +1,14 @@
 package org.georchestra.gateway.filter.headers;
 
-import org.springframework.cloud.gateway.filter.GatewayFilter;
-import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
-import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.cloud.gateway.route.Route;
-import org.springframework.cloud.gateway.support.ServerWebExchangeUtils;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+
+import org.springframework.cloud.gateway.filter.GatewayFilter;
+import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.cloud.gateway.route.Route;
+import org.springframework.cloud.gateway.support.ServerWebExchangeUtils;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 
 public class ProxyGatewayFilterFactory extends AbstractGatewayFilterFactory<Object> {
     public ProxyGatewayFilterFactory() {

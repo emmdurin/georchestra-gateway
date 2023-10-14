@@ -1,14 +1,15 @@
 package org.georchestra.gateway.security;
 
+import java.net.URI;
+
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.server.DefaultServerRedirectStrategy;
 import org.springframework.security.web.server.ServerRedirectStrategy;
 import org.springframework.security.web.server.WebFilterExchange;
 import org.springframework.security.web.server.authentication.RedirectServerAuthenticationFailureHandler;
 import org.springframework.util.Assert;
-import reactor.core.publisher.Mono;
 
-import java.net.URI;
+import reactor.core.publisher.Mono;
 
 public class ExtendedRedirectServerAuthenticationFailureHandler extends RedirectServerAuthenticationFailureHandler {
 

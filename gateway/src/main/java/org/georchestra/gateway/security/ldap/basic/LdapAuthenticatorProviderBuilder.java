@@ -23,17 +23,16 @@ import static java.util.Objects.requireNonNull;
 import org.georchestra.ds.users.AccountDao;
 import org.georchestra.gateway.security.ldap.extended.ExtendedLdapAuthenticationProvider;
 import org.georchestra.gateway.security.ldap.extended.ExtendedPasswordPolicyAwareContextSource;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.ldap.core.support.BaseLdapPathContextSource;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper;
 import org.springframework.security.ldap.authentication.BindAuthenticator;
 import org.springframework.security.ldap.search.FilterBasedLdapUserSearch;
 import org.springframework.security.ldap.userdetails.DefaultLdapAuthoritiesPopulator;
+import org.springframework.security.ldap.userdetails.LdapUserDetailsMapper;
 
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.springframework.security.ldap.userdetails.LdapUserDetailsMapper;
 
 /**
  */

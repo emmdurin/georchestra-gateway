@@ -1,14 +1,16 @@
-package org.georchestra.gateway.events;
+package org.georchestra.gateway.autoconfigure.accounts;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.georchestra.gateway.accounts.events.rabbitmq.RabbitmqAccountCreatedEventSender;
+import org.georchestra.gateway.accounts.events.rabbitmq.RabbitmqEventsConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
 /**
- * Application context test for {@link RabbitmqEventsAutoConfiguration}
+ * Application context test for {@link RabbitmqEventsConfiguration}
  */
 class RabbitmqEventsAutoConfigurationTest {
 
@@ -17,13 +19,14 @@ class RabbitmqEventsAutoConfigurationTest {
 
     @Test
     void conditionalOnPropertyNotSet() {
-        runner.run(context -> assertThat(context).hasNotFailed().doesNotHaveBean(RabbitmqEventsSender.class));
+        runner.run(
+                context -> assertThat(context).hasNotFailed().doesNotHaveBean(RabbitmqAccountCreatedEventSender.class));
     }
 
     @Test
     void conditionalOnPropertyDisabled() {
-        runner.withPropertyValues("georchestra.gateway.security.enableRabbitmqEvents=false")
-                .run(context -> assertThat(context).hasNotFailed().doesNotHaveBean(RabbitmqEventsSender.class));
+        runner.withPropertyValues("georchestra.gateway.security.enableRabbitmqEvents=false").run(
+                context -> assertThat(context).hasNotFailed().doesNotHaveBean(RabbitmqAccountCreatedEventSender.class));
     }
 
     @Test
@@ -35,7 +38,7 @@ class RabbitmqEventsAutoConfigurationTest {
                 "rabbitmqPort=3333", //
                 "rabbitmqUser=bunny", //
                 "rabbitmqPassword=rabbit"//
-        ).run(context -> assertThat(context).hasNotFailed().doesNotHaveBean(RabbitmqEventsSender.class));
+        ).run(context -> assertThat(context).hasNotFailed().doesNotHaveBean(RabbitmqAccountCreatedEventSender.class));
 
         runner.withPropertyValues("georchestra.gateway.security.createNonExistingUsersInLDAP=true", //
                 "georchestra.gateway.security.ldap.default.enabled=true", //
@@ -46,7 +49,7 @@ class RabbitmqEventsAutoConfigurationTest {
                 "rabbitmqPassword=rabbit"//
         ).run(context -> {
 
-            assertThat(context).hasNotFailed().hasSingleBean(RabbitmqEventsSender.class);
+            assertThat(context).hasNotFailed().hasSingleBean(RabbitmqAccountCreatedEventSender.class);
 
             assertThat(context).hasBean("connectionFactory");
             CachingConnectionFactory rabbitMQConnectionFactory = (CachingConnectionFactory) context

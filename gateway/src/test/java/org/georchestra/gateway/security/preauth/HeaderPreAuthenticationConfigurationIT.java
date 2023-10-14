@@ -29,11 +29,11 @@ public class HeaderPreAuthenticationConfigurationIT {
 
     private static final Map<String, String> ADMIN_HEADERS = Map.of(//
             "sec-georchestra-preauthenticated", "true", //
-            "sec-username", "pmartin", //
-            "sec-email", "pierre.martin@example.org", //
-            "sec-firstname", "Pierre", //
-            "sec-lastname", "Martin", //
-            "sec-org", "C2C", //
+            "preauth-username", "pmartin", //
+            "preauth-email", "pierre.martin@example.org", //
+            "preauth-firstname", "Pierre", //
+            "preauth-lastname", "Martin", //
+            "preauth-org", "C2C", //
             "Accept", "application/json");
 
     private WebTestClient.RequestHeadersUriSpec<?> prepareWebTestClientHeaders(

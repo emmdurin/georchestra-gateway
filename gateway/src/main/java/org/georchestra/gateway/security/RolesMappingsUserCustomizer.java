@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.georchestra.security.model.GeorchestraUser;
+import org.springframework.security.core.Authentication;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.cache.Cache;
@@ -82,14 +83,14 @@ public class RolesMappingsUserCustomizer implements GeorchestraUserCustomizerExt
     }
 
     @Override
-    public GeorchestraUser apply(GeorchestraUser user) {
+    public GeorchestraUser apply(Authentication origAuthToken, GeorchestraUser mappedUser) {
 
-        Set<String> additionalRoles = computeAdditionalRoles(user.getRoles());
+        Set<String> additionalRoles = computeAdditionalRoles(mappedUser.getRoles());
         if (!additionalRoles.isEmpty()) {
-            additionalRoles.addAll(user.getRoles());
-            user.setRoles(new ArrayList<>(additionalRoles));
+            additionalRoles.addAll(mappedUser.getRoles());
+            mappedUser.setRoles(new ArrayList<>(additionalRoles));
         }
-        return user;
+        return mappedUser;
     }
 
     /**

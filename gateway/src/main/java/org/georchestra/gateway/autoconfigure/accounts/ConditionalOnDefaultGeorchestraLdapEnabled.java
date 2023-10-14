@@ -17,7 +17,7 @@
  * geOrchestra.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.georchestra.gateway.autoconfigure.security;
+package org.georchestra.gateway.autoconfigure.accounts;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -25,7 +25,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.georchestra.gateway.security.preauth.HeaderPreauthConfigProperties;
+import org.georchestra.gateway.autoconfigure.security.ConditionalOnLdapEnabled;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 /**
@@ -34,7 +34,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 @Target({ ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@ConditionalOnProperty(name = HeaderPreauthConfigProperties.ENABLED_PROPERTY, havingValue = "true", matchIfMissing = false)
-public @interface ConditionalOnHeaderPreAuthentication {
+@ConditionalOnLdapEnabled
+@ConditionalOnProperty(name = "georchestra.gateway.security.ldap.default.enabled", havingValue = "true", matchIfMissing = false)
+public @interface ConditionalOnDefaultGeorchestraLdapEnabled {
 
 }

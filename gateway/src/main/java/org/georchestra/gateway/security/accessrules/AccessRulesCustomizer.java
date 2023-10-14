@@ -29,14 +29,14 @@ import org.georchestra.gateway.security.ServerHttpSecurityCustomizer;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity.AuthorizeExchangeSpec;
 import org.springframework.security.config.web.server.ServerHttpSecurity.AuthorizeExchangeSpec.Access;
+import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatcher;
+import org.springframework.web.server.ServerWebExchange;
 
 import com.google.common.annotations.VisibleForTesting;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatcher;
-import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 /**

@@ -18,7 +18,15 @@
  */
 package org.georchestra.gateway.app;
 
-import lombok.extern.slf4j.Slf4j;
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
+
+import javax.annotation.PostConstruct;
+
 import org.georchestra.gateway.security.GeorchestraUserMapper;
 import org.georchestra.gateway.security.ldap.LdapConfigProperties;
 import org.georchestra.security.model.GeorchestraUser;
@@ -43,12 +51,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Mono;
 
-import javax.annotation.PostConstruct;
-import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
+import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Mono;
 
 @Controller
 @Slf4j

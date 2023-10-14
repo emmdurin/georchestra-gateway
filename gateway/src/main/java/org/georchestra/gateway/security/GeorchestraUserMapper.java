@@ -82,13 +82,13 @@ public class GeorchestraUserMapper {
                 .map(resolver -> resolver.resolve(authToken))//
                 .filter(Optional::isPresent)//
                 .map(Optional::orElseThrow)//
-                .map(this::customize).findFirst();
+                .map(mapped -> customize(authToken, mapped)).findFirst();
     }
 
-    private GeorchestraUser customize(GeorchestraUser user) {
-        GeorchestraUser customized = user;
+    private GeorchestraUser customize(@NonNull Authentication authToken, GeorchestraUser mapped) {
+        GeorchestraUser customized = mapped;
         for (GeorchestraUserCustomizerExtension customizer : customizers) {
-            customized = customizer.apply(customized);
+            customized = customizer.apply(authToken, customized);
         }
         return customized;
     }

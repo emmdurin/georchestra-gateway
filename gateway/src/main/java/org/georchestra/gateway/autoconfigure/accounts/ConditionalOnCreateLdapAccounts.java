@@ -17,7 +17,7 @@
  * geOrchestra.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.georchestra.gateway.autoconfigure.security;
+package org.georchestra.gateway.autoconfigure.accounts;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

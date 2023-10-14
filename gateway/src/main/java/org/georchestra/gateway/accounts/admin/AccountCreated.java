@@ -16,25 +16,18 @@
  * You should have received a copy of the GNU General Public License along with
  * geOrchestra.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.georchestra.gateway.accounts.admin;
 
-package org.georchestra.gateway.autoconfigure.security;
+import org.georchestra.security.model.GeorchestraUser;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import lombok.NonNull;
+import lombok.Value;
 
 /**
- *
+ * Application event published when a new account was created
  */
-@Target({ ElementType.TYPE, ElementType.METHOD })
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-@ConditionalOnLdapEnabled
-@ConditionalOnProperty(name = "georchestra.gateway.security.ldap.default.enabled", havingValue = "true", matchIfMissing = false)
-public @interface ConditionalOnDefaultGeorchestraLdapEnabled {
+@Value
+public class AccountCreated {
 
+    private @NonNull GeorchestraUser user;
 }

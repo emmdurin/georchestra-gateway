@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.georchestra.gateway.security.ServerHttpSecurityCustomizer;
-import org.georchestra.gateway.security.ldap.accounts.GeorchestraLdapAccessConfiguration;
 import org.georchestra.gateway.security.ldap.basic.BasicLdapAuthenticationConfiguration;
 import org.georchestra.gateway.security.ldap.basic.BasicLdapAuthenticationProvider;
 import org.georchestra.gateway.security.ldap.extended.ExtendedLdapAuthenticationConfiguration;
@@ -72,8 +71,6 @@ import lombok.extern.slf4j.Slf4j;
  * @see LdapConfigProperties
  * @see BasicLdapAuthenticationConfiguration
  * @see ExtendedLdapAuthenticationConfiguration
- * @see GeorchestraLdapAccessConfiguration
- * @see ActiveDirectoryAuthenticationConfiguration
  */
 @Configuration(proxyBeanMethods = true)
 @EnableConfigurationProperties(LdapConfigProperties.class)

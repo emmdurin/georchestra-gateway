@@ -28,10 +28,12 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.georchestra.gateway.security.ldap.LdapConfigProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionMessage;
 import org.springframework.boot.autoconfigure.condition.ConditionMessage.ItemsBuilder;
 import org.springframework.boot.autoconfigure.condition.ConditionOutcome;
 import org.springframework.boot.autoconfigure.condition.SpringBootCondition;
+import org.springframework.context.annotation.Condition;
 import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.EnumerablePropertySource;
@@ -42,7 +44,11 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
 import com.google.common.collect.Streams;
 
 /**
- *
+ * {@link Condition} that matches if at least one LDAP config is enabled from
+ * the externalized config properties
+ * {@code georchestra.gateway.security.ldap.<configName>.enabled}
+ * 
+ * @see LdapConfigProperties
  */
 class AtLeastOneLdapDatasourceEnabledCondition extends SpringBootCondition {
 

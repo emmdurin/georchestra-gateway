@@ -16,11 +16,9 @@
  * You should have received a copy of the GNU General Public License along with
  * geOrchestra.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.georchestra.gateway.model;
+package org.georchestra.gateway.security.preauth;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -29,32 +27,25 @@ import lombok.Generated;
 
 /**
  * Model object representing the externalized configuration properties used to
- * set up URI based access rules and HTTP request headers appended to proxied
- * requests to back-end services.
- *
+ * set up request headers based pre-authentication.
  */
 @Data
 @Generated
-@ConfigurationProperties("georchestra.gateway")
-public class GatewayConfigProperties {
+@ConfigurationProperties(HeaderPreauthConfigProperties.PROPERTY_BASE)
+public class HeaderPreauthConfigProperties {
 
-    private Map<String, List<String>> rolesMappings = Map.of();
+    static final String PROPERTY_BASE = "georchestra.gateway.security.header-authentication";
 
-    /**
-     * Configures the global security headers to append to all proxied http requests
-     */
-    private HeaderMappings defaultHeaders;
+    public static final String ENABLED_PROPERTY = PROPERTY_BASE + ".enabled";
 
     /**
-     * Incoming request URI pattern matching for requests that don't match any of
-     * the service-specific rules under
-     * {@literal georchestra.gateway.services.[service].access-rules}
+     * If enabled, pre-authentication is enabled and can be performed by passing
+     * true to the sec-georchestra-preauthenticated request header, and user details
+     * through the following request headers: preuath-username, preuath-firstname,
+     * preuath-lastname, preuath-org, preuath-email, preuath-roles
      */
-    private List<RoleBasedAccessRule> globalAccessRules;
+    private boolean enabled = false;
 
-    /**
-     * Maps a logical service name to its back-end service URL and security settings
-     */
-    private Map<String, Service> services = Collections.emptyMap();
+    private List<String> trustedProxies;
 
 }

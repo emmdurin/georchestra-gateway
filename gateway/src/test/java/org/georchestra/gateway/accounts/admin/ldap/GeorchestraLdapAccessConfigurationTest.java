@@ -1,16 +1,33 @@
-package org.georchestra.gateway.security.ldap;
+/*
+ * Copyright (C) 2023 by the geOrchestra PSC
+ *
+ * This file is part of geOrchestra.
+ *
+ * geOrchestra is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * geOrchestra is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * geOrchestra.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.georchestra.gateway.accounts.admin.ldap;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.georchestra.ds.orgs.OrgsDao;
 import org.georchestra.ds.users.AccountDao;
-import org.georchestra.gateway.security.ldap.accounts.GeorchestraLdapAccessConfiguration;
-import org.georchestra.gateway.security.ldap.basic.BasicLdapAuthenticationConfiguration;
+import org.georchestra.gateway.security.ldap.LdapConfigProperties;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.context.annotation.UserConfigurations;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Configuration;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class GeorchestraLdapAccessConfigurationTest {
 
@@ -19,8 +36,7 @@ public class GeorchestraLdapAccessConfigurationTest {
     }
 
     private ApplicationContextRunner runner = new ApplicationContextRunner()
-            .withUserConfiguration(LdapConfigPropertiesValidationsTest.EnableConfigProps.class)
-            .withConfiguration(UserConfigurations.of(GeorchestraLdapAccessConfiguration.class));
+            .withConfiguration(UserConfigurations.of(GeorchestraLdapAccountManagementConfiguration.class));
 
     public @Test void accountsAndRolesDaoRelatedBeansAreAvailable() {
         runner.withPropertyValues(""//

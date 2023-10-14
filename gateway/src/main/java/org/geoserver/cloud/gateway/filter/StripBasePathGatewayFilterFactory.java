@@ -6,7 +6,7 @@ package org.geoserver.cloud.gateway.filter;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-import lombok.Data;
+import java.util.List;
 
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -15,7 +15,7 @@ import org.springframework.cloud.gateway.filter.factory.StripPrefixGatewayFilter
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.util.StringUtils;
 
-import java.util.List;
+import lombok.Data;
 
 /**
  * See gateway's issue <a href=

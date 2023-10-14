@@ -16,25 +16,25 @@
  * You should have received a copy of the GNU General Public License along with
  * geOrchestra.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.georchestra.gateway.autoconfigure.security;
+package org.georchestra.gateway.autoconfigure.accounts;
 
-import org.georchestra.gateway.security.preauth.HeaderPreAuthenticationConfiguration;
+import org.georchestra.gateway.accounts.events.rabbitmq.RabbitmqEventsConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Import;
 
 /**
- * {@link AutoConfiguration @AutoConfiguration} to enable request headers
- * pre-authentication.
- * <p>
- * This feature shall be enabled through the
- * {@code georchestra.gateway.security.header-authentication.enabled=true}
- * config property.
+ * {@link AutoConfiguration @AutoConfiguration} to enable sending events over
+ * rabbitmq when it is enabled to create LDAP accounts from both/either
+ * pre-authenticated and OIDC authentication scenarios, AND
+ * {@literal georchestra.gateway.security.enableRabbitmqEvents = true}
  * 
- * @see ConditionalOnHeaderPreAuthentication
- * @see HeaderPreAuthenticationConfiguration
+ * @see ConditionalOnCreateLdapAccounts
+ * @see RabbitmqEventsConfiguration
  */
 @AutoConfiguration
-@ConditionalOnHeaderPreAuthentication
-@Import(HeaderPreAuthenticationConfiguration.class)
-public class HeaderPreAuthenticationAutoConfiguration {
+@ConditionalOnCreateLdapAccounts
+@ConditionalOnProperty(name = "georchestra.gateway.security.enableRabbitmqEvents", havingValue = "true", matchIfMissing = false)
+@Import(RabbitmqEventsConfiguration.class)
+public class RabbitmqEventsAutoConfiguration {
 }

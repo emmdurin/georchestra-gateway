@@ -1,13 +1,17 @@
 package org.georchestra.gateway.security.ldap.extended;
 
-import org.springframework.core.log.LogMessage;
-import org.springframework.ldap.support.LdapUtils;
-import org.springframework.security.ldap.ppolicy.*;
-
 import javax.naming.Context;
 import javax.naming.directory.DirContext;
 import javax.naming.ldap.Control;
 import javax.naming.ldap.LdapContext;
+
+import org.springframework.core.log.LogMessage;
+import org.springframework.ldap.support.LdapUtils;
+import org.springframework.security.ldap.ppolicy.PasswordPolicyAwareContextSource;
+import org.springframework.security.ldap.ppolicy.PasswordPolicyControl;
+import org.springframework.security.ldap.ppolicy.PasswordPolicyControlExtractor;
+import org.springframework.security.ldap.ppolicy.PasswordPolicyException;
+import org.springframework.security.ldap.ppolicy.PasswordPolicyResponseControl;
 
 public class ExtendedPasswordPolicyAwareContextSource extends PasswordPolicyAwareContextSource {
 

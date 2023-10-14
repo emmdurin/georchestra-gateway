@@ -18,25 +18,18 @@
  */
 package org.georchestra.gateway.filter.headers;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import org.georchestra.gateway.filter.headers.RemoveHeadersGatewayFilterFactory.RegExConfig;
-import org.georchestra.gateway.model.GatewayConfigProperties;
-import org.georchestra.gateway.security.ldap.LdapConfigProperties;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.georchestra.gateway.security.preauth.HeaderPreauthConfigProperties;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.cloud.gateway.filter.factory.GatewayFilterFactory;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 
@@ -44,7 +37,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.CollectionUtils;
 
 /**
  * {@link GatewayFilterFactory} to remove incoming HTTP request headers whose
@@ -71,20 +63,13 @@ import org.springframework.util.CollectionUtils;
  * 
  */
 @Slf4j(topic = "org.georchestra.gateway.filter.headers")
-@EnableConfigurationProperties(LdapConfigProperties.class)
 public class RemoveHeadersGatewayFilterFactory extends AbstractGatewayFilterFactory<RegExConfig> {
-
-    @Autowired
-    private Environment environment;
 
     @Value("${georchestra.gateway.security.createNonExistingUsersInLDAP:}")
     private String trusted;
 
-    GatewayConfigProperties configProps;
-
-    public RemoveHeadersGatewayFilterFactory(GatewayConfigProperties configProps) {
+    public RemoveHeadersGatewayFilterFactory() {
         super(RegExConfig.class);
-        this.configProps = configProps;
     }
 
     @Override
@@ -94,43 +79,46 @@ public class RemoveHeadersGatewayFilterFactory extends AbstractGatewayFilterFact
 
     @Override
     public GatewayFilter apply(RegExConfig regexConfig) {
-
         return (exchange, chain) -> {
             final RegExConfig config = regexConfig;// == null ? DEFAULT_SECURITY_HEADERS_CONFIG : regexConfig;
             HttpHeaders incoming = exchange.getRequest().getHeaders();
-
-            if (config.anyMatches(incoming) && (!configProps.isHeaderAuthentication()
-                    || !headersAreTrusted(exchange.getRequest().getRemoteAddress().getAddress().toString()))) {
+            if (config.anyMatches(incoming)) {
                 ServerHttpRequest request = exchange.getRequest().mutate().headers(config::removeMatching).build();
                 exchange = exchange.mutate().request(request).build();
             }
-
             return chain.filter(exchange);
         };
     }
 
+    /**
+     * TODO: revisit how/whether to implement proxy-to-proxy trust feature. Config
+     * properties moved to {@link HeaderPreauthConfigProperties}
+     * 
+     * @return {@code true}
+     */
     private boolean headersAreTrusted(String serverAddress) {
+        return true;
         // If trustedProxies list is empty, we consider the proxy chain is trusted
-        if (configProps != null && CollectionUtils.isEmpty(configProps.getHeaderTrustedProxies())) {
-            return true;
-        }
-        if (configProps != null && !configProps.getHeaderTrustedProxies().isEmpty()
-                && configProps.isHeaderAuthentication()) {
-            if (configProps.getHeaderTrustedProxies().stream().filter(e -> serverAddress.contains(e))
-                    .collect(Collectors.toList()).size() > 0) {
-                return true;
-            }
-            if (configProps.getHeaderTrustedProxies().stream().filter(e -> {
-                try {
-                    return InetAddress.getByName(serverAddress).toString().contains(e);
-                } catch (UnknownHostException exp) {
-                    return false;
-                }
-            }).collect(Collectors.toList()).size() > 0) {
-                return true;
-            }
-        }
-        return false;
+//        if (configProps != null && CollectionUtils.isEmpty(configProps.getHeaderTrustedProxies())) {
+//            return true;
+//        }
+//        if (configProps != null && !configProps.getHeaderTrustedProxies().isEmpty()
+//                && configProps.isHeaderAuthentication()) {
+//            if (configProps.getHeaderTrustedProxies().stream().filter(e -> serverAddress.contains(e))
+//                    .collect(Collectors.toList()).size() > 0) {
+//                return true;
+//            }
+//            if (configProps.getHeaderTrustedProxies().stream().filter(e -> {
+//                try {
+//                    return InetAddress.getByName(serverAddress).toString().contains(e);
+//                } catch (UnknownHostException exp) {
+//                    return false;
+//                }
+//            }).collect(Collectors.toList()).size() > 0) {
+//                return true;
+//            }
+//        }
+//        return false;
     }
 
     @NoArgsConstructor

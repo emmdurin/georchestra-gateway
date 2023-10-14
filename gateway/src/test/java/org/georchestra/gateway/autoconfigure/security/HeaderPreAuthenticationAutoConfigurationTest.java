@@ -14,7 +14,7 @@ public class HeaderPreAuthenticationAutoConfigurationTest {
 
     public @Test void resolveHttpHeadersGeorchestraUserFilterIsAvailable() {
         runner.withPropertyValues(""//
-                , "georchestra.gateway.headerAuthentication: true" //
+                , "georchestra.gateway.security.header-authentication.enabled: true" //
         ).run(context -> {
             assertThat(context).hasNotFailed().hasSingleBean(PreauthGatewaySecurityCustomizer.class)
                     .hasSingleBean(PreauthenticatedUserMapperExtension.class);
@@ -23,7 +23,7 @@ public class HeaderPreAuthenticationAutoConfigurationTest {
 
     public @Test void resolveHttpHeadersGeorchestraUserFilterIsUnavailable() {
         runner.withPropertyValues(""//
-                , "georchestra.gateway.headerAuthentication: false" //
+                , "georchestra.gateway.security.header-authentication.enabled: false" //
         ).run(context -> {
             assertThat(context).hasNotFailed().doesNotHaveBean(PreauthGatewaySecurityCustomizer.class)
                     .doesNotHaveBean(PreauthenticatedUserMapperExtension.class);

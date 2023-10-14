@@ -20,6 +20,7 @@ package org.georchestra.gateway.security.preauth;
 
 import org.georchestra.gateway.security.GeorchestraUserMapper;
 import org.georchestra.security.model.GeorchestraUser;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
@@ -30,7 +31,7 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
  * <p>
  * <ul>
  * <li>{@link PreauthGatewaySecurityCustomizer} performs authentication based on
- * incoming {@literal sec-*} headers and produces a
+ * incoming {@literal preuath-*} headers and produces a
  * {@link PreAuthenticatedAuthenticationToken}, provided the
  * {@code sec-georchestra-preauthenticated} header has a value of {@code true}.
  * This is intended to be sent by a reverse proxy, prior sanitization of
@@ -38,16 +39,16 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
  * <p>
  * The following request headers are parsed:
  * <ul>
- * <li>{@literal sec-username}
- * <li>{@literal sec-firstname}
- * <li>{@literal sec-lastname}
- * <li>{@literal sec-org}
- * <li>{@literal sec-email}
- * <li>{@literal sec-roles}
+ * <li>{@literal preuath-username}
+ * <li>{@literal preuath-firstname}
+ * <li>{@literal preuath-lastname}
+ * <li>{@literal preuath-org}
+ * <li>{@literal preuath-email}
+ * <li>{@literal preuath-roles}
  * </ul>
- * NOTE {@literal sec-roles} is NOT mandatory, and the pre-authenticated user
- * will only have the {@literal ROLE_USER} role when {@code sec-roles} is not
- * provided.
+ * NOTE {@literal preuath-roles} is NOT mandatory, and the pre-authenticated
+ * user will only have the {@literal ROLE_USER} role when {@code preuath-roles}
+ * is not provided.
  * <li>{@link PreauthenticatedUserMapperExtension} maps the
  * {@link PreAuthenticatedAuthenticationToken} to a {@link GeorchestraUser} when
  * {@link GeorchestraUserMapper#resolve(org.springframework.security.core.Authentication)
@@ -56,6 +57,7 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
  * 
  */
 @Configuration
+@EnableConfigurationProperties(HeaderPreauthConfigProperties.class)
 public class HeaderPreAuthenticationConfiguration {
 
     @Bean
@@ -67,13 +69,5 @@ public class HeaderPreAuthenticationConfiguration {
     PreauthenticatedUserMapperExtension preauthenticatedUserMapperExtension() {
         return new PreauthenticatedUserMapperExtension();
     }
-
-    /**
-     * Filter to enable pre-authentication from a trusted proxy
-     */
-//    @Bean
-//    ResolveHttpHeadersGeorchestraUserFilter resolveHttpHeadersGeorchestraUserFilter() {
-//        return new ResolveHttpHeadersGeorchestraUserFilter();
-//    }
 
 }

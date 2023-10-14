@@ -26,16 +26,13 @@ import org.georchestra.gateway.filter.headers.providers.GeorchestraUserHeadersCo
 import org.georchestra.gateway.filter.headers.providers.JsonPayloadHeadersContributor;
 import org.georchestra.gateway.filter.headers.providers.SecProxyHeaderContributor;
 import org.georchestra.gateway.model.GatewayConfigProperties;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.gateway.config.GatewayAutoConfiguration;
 import org.springframework.cloud.gateway.filter.factory.GatewayFilterFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration(proxyBeanMethods = false)
-@AutoConfigureBefore(GatewayAutoConfiguration.class)
 @EnableConfigurationProperties(GatewayConfigProperties.class)
 public class HeaderFiltersConfiguration {
 
@@ -50,33 +47,39 @@ public class HeaderFiltersConfiguration {
      * @see #organizationSecurityHeadersProvider()
      */
 
-    public @Bean AddSecHeadersGatewayFilterFactory addSecHeadersGatewayFilterFactory(
-            List<HeaderContributor> providers) {
+    @Bean
+    AddSecHeadersGatewayFilterFactory addSecHeadersGatewayFilterFactory(List<HeaderContributor> providers) {
         return new AddSecHeadersGatewayFilterFactory(providers);
     }
 
-    public @Bean CookieAffinityGatewayFilterFactory cookieAffinityGatewayFilterFactory() {
+    @Bean
+    CookieAffinityGatewayFilterFactory cookieAffinityGatewayFilterFactory() {
         return new CookieAffinityGatewayFilterFactory();
     }
 
-    public @Bean ProxyGatewayFilterFactory proxyGatewayFilterFactory() {
+    @Bean
+    ProxyGatewayFilterFactory proxyGatewayFilterFactory() {
         return new ProxyGatewayFilterFactory();
     }
 
-    public @Bean GeorchestraUserHeadersContributor userSecurityHeadersProvider() {
+    @Bean
+    GeorchestraUserHeadersContributor userSecurityHeadersProvider() {
         return new GeorchestraUserHeadersContributor();
     }
 
-    public @Bean SecProxyHeaderContributor secProxyHeaderProvider(GatewayConfigProperties configProps) {
+    @Bean
+    SecProxyHeaderContributor secProxyHeaderProvider(GatewayConfigProperties configProps) {
         BooleanSupplier secProxyEnabledSupplier = () -> configProps.getDefaultHeaders().getProxy().orElse(false);
         return new SecProxyHeaderContributor(secProxyEnabledSupplier);
     }
 
-    public @Bean GeorchestraOrganizationHeadersContributor organizationSecurityHeadersProvider() {
+    @Bean
+    GeorchestraOrganizationHeadersContributor organizationSecurityHeadersProvider() {
         return new GeorchestraOrganizationHeadersContributor();
     }
 
-    public @Bean JsonPayloadHeadersContributor jsonPayloadHeadersContributor() {
+    @Bean
+    JsonPayloadHeadersContributor jsonPayloadHeadersContributor() {
         return new JsonPayloadHeadersContributor();
     }
 
@@ -84,17 +87,17 @@ public class HeaderFiltersConfiguration {
      * General purpose {@link GatewayFilterFactory} to remove incoming HTTP request
      * headers based on a Java regular expression
      */
-    public @Bean RemoveHeadersGatewayFilterFactory removeHeadersGatewayFilterFactory(
-            GatewayConfigProperties configProps) {
-        return new RemoveHeadersGatewayFilterFactory(configProps);
+    @Bean
+    RemoveHeadersGatewayFilterFactory removeHeadersGatewayFilterFactory() {
+        return new RemoveHeadersGatewayFilterFactory();
     }
 
     /**
      * {@link GatewayFilterFactory} to remove incoming HTTP {@literal sec-*} HTTP
      * request headers to prevent impersonation from outside
      */
-    public @Bean RemoveSecurityHeadersGatewayFilterFactory removeSecurityHeadersGatewayFilterFactory(
-            GatewayConfigProperties configProps) {
-        return new RemoveSecurityHeadersGatewayFilterFactory(configProps);
+    @Bean
+    RemoveSecurityHeadersGatewayFilterFactory removeSecurityHeadersGatewayFilterFactory() {
+        return new RemoveSecurityHeadersGatewayFilterFactory();
     }
 }

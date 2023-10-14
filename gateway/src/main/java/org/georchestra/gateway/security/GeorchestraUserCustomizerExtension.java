@@ -19,10 +19,11 @@
 
 package org.georchestra.gateway.security;
 
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 import org.georchestra.security.model.GeorchestraUser;
 import org.springframework.core.Ordered;
+import org.springframework.security.core.Authentication;
 
 /**
  * Extension point to customize the state of a {@link GeorchestraUser} once it
@@ -31,7 +32,8 @@ import org.springframework.core.Ordered;
  * 
  * @see GeorchestraUserMapper
  */
-public interface GeorchestraUserCustomizerExtension extends Ordered, Function<GeorchestraUser, GeorchestraUser> {
+public interface GeorchestraUserCustomizerExtension
+        extends Ordered, BiFunction<Authentication, GeorchestraUser, GeorchestraUser> {
 
     default int getOrder() {
         return 0;

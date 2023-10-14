@@ -31,10 +31,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.ldap.userdetails.LdapUserDetails;
+import org.springframework.security.ldap.userdetails.LdapUserDetailsImpl;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.ldap.userdetails.LdapUserDetailsImpl;
 
 /**
  * {@link GeorchestraUserMapperExtension} that maps LDAP-authenticated token to

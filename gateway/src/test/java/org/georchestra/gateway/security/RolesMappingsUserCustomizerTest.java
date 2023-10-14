@@ -33,6 +33,8 @@ import java.util.regex.Pattern;
 import org.georchestra.security.model.GeorchestraUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.Authentication;
 
 /**
  * Test suite for {@link RolesMappingsUserCustomizer}
@@ -41,11 +43,13 @@ class RolesMappingsUserCustomizerTest {
 
     private GeorchestraUser user;
     private Map<String, List<String>> config;
+    private Authentication auth;
 
     @BeforeEach
     void setUp() {
         config = new HashMap<>();
         user = new GeorchestraUser();
+        auth = new TestingAuthenticationToken("testuser", null);
     }
 
     private void addConfig(String role, String... additionalRoles) {
@@ -69,7 +73,7 @@ class RolesMappingsUserCustomizerTest {
     void emptyConfig() {
         RolesMappingsUserCustomizer customizer = new RolesMappingsUserCustomizer(config);
         user.setRoles(List.of("ROLE_USER"));
-        GeorchestraUser customized = customizer.apply(user);
+        GeorchestraUser customized = customizer.apply(auth, user);
         assertSame(user, customized);
         assertEquals(List.of("ROLE_USER"), customized.getRoles());
     }
@@ -83,15 +87,15 @@ class RolesMappingsUserCustomizerTest {
         GeorchestraUser customized;
 
         user.setRoles(List.of("ROLE_USER"));
-        customized = customizer.apply(user);
+        customized = customizer.apply(auth, user);
         assertEquals(Set.of("ROLE_EDITOR", "ROLE_USER", "ROLE_GUEST"), Set.copyOf(customized.getRoles()));
 
         user.setRoles(List.of("ROLE_ADMIN"));
-        customized = customizer.apply(user);
+        customized = customizer.apply(auth, user);
         assertEquals(Set.of("ROLE_ADMIN", "ROLE_GN_ADMIN", "ROLE_ADMINISTRATOR"), Set.copyOf(customized.getRoles()));
 
         user.setRoles(List.of("ROLE_ADMIN", "ROLE_USER"));
-        customized = customizer.apply(user);
+        customized = customizer.apply(auth, user);
         assertEquals(
                 Set.of("ROLE_ADMIN", "ROLE_GN_ADMIN", "ROLE_ADMINISTRATOR", "ROLE_EDITOR", "ROLE_USER", "ROLE_GUEST"),
                 Set.copyOf(customized.getRoles()));
@@ -106,20 +110,20 @@ class RolesMappingsUserCustomizerTest {
         GeorchestraUser customized;
 
         user.setRoles(List.of("ROLE_USER"));
-        customized = customizer.apply(user);
+        customized = customizer.apply(auth, user);
         assertEquals(Set.of("ROLE_USER"), Set.copyOf(customized.getRoles()));
 
         user.setRoles(List.of("ROLE.GDI.USER"));
-        customized = customizer.apply(user);
+        customized = customizer.apply(auth, user);
         assertEquals(Set.of("ROLE.GDI.USER", "ROLE_USER", "ROLE_GUEST"), Set.copyOf(customized.getRoles()));
 
         user.setRoles(List.of("ROLE.GDI.ADMIN"));
-        customized = customizer.apply(user);
+        customized = customizer.apply(auth, user);
         assertEquals(Set.of("ROLE.GDI.ADMIN", "ROLE_GN_ADMIN", "ROLE_ADMINISTRATOR"),
                 Set.copyOf(customized.getRoles()));
 
         user.setRoles(List.of("ROLE.TEST.ADMIN", "ROLE.GDI.USER"));
-        customized = customizer.apply(user);
+        customized = customizer.apply(auth, user);
         assertEquals(Set.of("ROLE.TEST.ADMIN", "ROLE.GDI.USER", "ROLE_GN_ADMIN", "ROLE_ADMINISTRATOR", "ROLE_USER",
                 "ROLE_GUEST"), Set.copyOf(customized.getRoles()));
     }

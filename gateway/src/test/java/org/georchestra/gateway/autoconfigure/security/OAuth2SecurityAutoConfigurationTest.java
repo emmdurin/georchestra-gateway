@@ -29,9 +29,7 @@ import org.georchestra.gateway.security.oauth2.OpenIdConnectCustomClaimsConfigPr
 import org.georchestra.gateway.security.oauth2.OpenIdConnectCustomClaimsConfigProperties.RolesMapping;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
-import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration;
 import org.springframework.boot.test.context.runner.ReactiveWebApplicationContextRunner;
-import org.springframework.cloud.gateway.config.GatewayReactiveOAuth2AutoConfiguration;
 import org.springframework.security.oauth2.client.endpoint.ReactiveOAuth2AccessTokenResponseClient;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcReactiveOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.DefaultReactiveOAuth2UserService;

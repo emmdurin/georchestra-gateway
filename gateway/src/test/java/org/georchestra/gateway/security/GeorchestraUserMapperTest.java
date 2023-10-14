@@ -100,12 +100,12 @@ class GeorchestraUserMapperTest {
         GeorchestraUserMapperExtension userMapper = mock(GeorchestraUserMapperExtension.class);
         when(userMapper.resolve(same(auth))).thenReturn(Optional.of(user));
 
-        GeorchestraUserCustomizerExtension customizer1 = u -> {
+        GeorchestraUserCustomizerExtension customizer1 = (a, u) -> {
             u.setUsername("customizer1");
             return u;
         };
 
-        GeorchestraUserCustomizerExtension customizer2 = u -> {
+        GeorchestraUserCustomizerExtension customizer2 = (a, u) -> {
             u.setRoles(List.of("ROLE_1", "ROLE_2"));
             return u;
         };

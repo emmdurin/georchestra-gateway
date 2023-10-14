@@ -21,20 +21,15 @@ package org.georchestra.gateway.security.oauth2;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.georchestra.ds.users.AccountDaoImpl;
 import org.georchestra.security.model.GeorchestraUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.ldap.core.LdapTemplate;
-import org.springframework.security.ldap.DefaultSpringSecurityContextSource;
 import org.springframework.security.oauth2.core.oidc.AddressStandardClaim;
 import org.springframework.security.oauth2.core.oidc.StandardClaimAccessor;
 

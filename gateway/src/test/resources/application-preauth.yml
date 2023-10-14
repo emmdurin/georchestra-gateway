@@ -12,14 +12,14 @@ georchestra:
           - "/**"
           - "/proxy/?url=*"
         anonymous: true
-    headerAuthentication: true
     security:
       createNonExistingUsersInLDAP: true
-      oauth2:
-        enabled: false
+      oauth2.enabled: false
+      header-authentication:
+         enabled: true
       ldap:
         default:
-          enabled: true
+          enabled: false
           extended: true
           url: ldap://georchestra-ldap:389/
           baseDn: dc=georchestra,dc=org
@@ -43,8 +43,7 @@ spring:
   main:
     web-application-type: reactive
     banner-mode: off
-  application:
-    name: gateway-service
+  application.name: gateway-service
   cloud:
     gateway:
       enabled: true
@@ -55,7 +54,5 @@ spring:
         # AddSecHeaders appends sec-* headers to proxied requests based on the
         # georchestra.gateway.default-headers and georchestra.gateway.servies.<service>.headers config properties
         - AddSecHeaders
-      httpclient:
-        wiretap: true
-      httpserver:
-        wiretap: false
+      httpclient.wiretap: true
+      httpserver.wiretap: false

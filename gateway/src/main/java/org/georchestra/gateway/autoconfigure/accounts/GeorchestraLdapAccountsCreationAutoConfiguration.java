@@ -16,9 +16,9 @@
  * You should have received a copy of the GNU General Public License along with
  * geOrchestra.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.georchestra.gateway.autoconfigure.security;
+package org.georchestra.gateway.autoconfigure.accounts;
 
-import org.georchestra.gateway.security.ldap.accounts.GeorchestraLdapAccessConfiguration;
+import org.georchestra.gateway.accounts.admin.ldap.GeorchestraLdapAccountManagementConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Import;
 
@@ -26,9 +26,10 @@ import org.springframework.context.annotation.Import;
  * {@link AutoConfiguration @AutoConfiguration}
  * 
  * @see ConditionalOnCreateLdapAccounts
+ * @see GeorchestraLdapAccountManagementConfiguration
  */
 @AutoConfiguration
 @ConditionalOnCreateLdapAccounts
-@Import(GeorchestraLdapAccessConfiguration.class)
+@Import(GeorchestraLdapAccountManagementConfiguration.class)
 public class GeorchestraLdapAccountsCreationAutoConfiguration {
 }
