@@ -84,6 +84,7 @@ class LdapAccountsManager extends AbstractAccountsManager {
                 roleDao.addUser("ROLE_USER", newAccount);
             }
             for (String role : mapped.getRoles()) {
+                role = role.replaceFirst("^ROLE_", "");
                 ensureRoleExists(role);
                 roleDao.addUser(role, newAccount);
             }
