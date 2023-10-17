@@ -23,11 +23,11 @@ georchestra:
 The following headers are expected to be received by the Gateway:
 
 * `sec-georchestra-preauthenticated`: set to `true`
-* `sec-username`: set to the username / user identifier (e.g. "pmauduit")
-* `sec-email`: the email address of the user (e.g. "pierre.mauduit@example.org")
-* `sec-firstname`: the first name of the user (e.g. "Pierre")
-* `sec-lastname`: the surname of the user (e.g. "Mauduit")
-* `sec-org`: the organisation identifier (e.g. "geOrchestra")
+* `preauth-username`: set to the username / user identifier (e.g. "pmauduit")
+* `preauth-email`: the email address of the user (e.g. "pierre.mauduit@example.org")
+* `preauth-firstname`: the first name of the user (e.g. "Pierre")
+* `preauth-lastname`: the surname of the user (e.g. "Mauduit")
+* `preauth-org`: the organisation identifier (e.g. "geOrchestra")
 
 == Account creation
 
@@ -39,13 +39,16 @@ The account creation must be explicitly activated using the following yaml confi
 ```
 georchestra:
   gateway:
-    headerAuthentication: true
     security:
+      header-authentication:
+        enabled: true
       createNonExistingUsersInLDAP: true
 ```
 
-To create the user into the geOrchestra LDAP, a `default` LDAP must be
-defined, and you generally need read/write access to it. Below is a configuration example
+To create the user into the geOrchestra LDAP, a `default` & `extended` LDAP must be
+defined, and you generally need read/write access to it, meaning that the `adminDn` and `adminPassword` have to be provided in the configuration.
+
+Below is a configuration example snippet
 suitable for your `application.yml` gateway configuration file:
 
 ```
@@ -129,16 +132,17 @@ The following Apache configuration has been used in a setup to interact with the
         MellonEndpointPath /mellon
 
         # it is this proxy's responsability to make sure the value of these headers are legit
-        # See a list of headers used by geOrchestra here:
-        # https://github.com/georchestra/georchestra/blob/master/commons/src/main/java/org/georchestra/commons/security/SecurityHeaders.java#L41-L67
+
         RequestHeader unset sec-georchestra-preauthenticated
-        RequestHeader unset sec-mellon-name-id
-        RequestHeader unset sec-username
-        RequestHeader unset sec-longname
-        RequestHeader unset sec-name
-        RequestHeader unset sec-givenname
-        RequestHeader unset sec-email
-        RequestHeader unset sec-org
+        RequestHeader unset preauth-username
+        RequestHeader unset preauth-email
+        RequestHeader unset preauth-firstname
+        RequestHeader unset preauth-lastname
+        RequestHeader unset preauth-org
+
+        # The following ones are used by geOrchestra
+        # You can find a list of headers here:
+        # https://github.com/georchestra/georchestra/blob/master/commons/src/main/java/org/georchestra/commons/security/SecurityHeaders.java#L41-L67
         RequestHeader unset sec-proxy
         RequestHeader unset sec-user
         RequestHeader unset sec-organization
@@ -155,14 +159,11 @@ The following Apache configuration has been used in a setup to interact with the
         RequestHeader unset imp-username
 
         RequestHeader set sec-georchestra-preauthenticated true "expr=-n env('MELLON_NAME_ID')"
-        RequestHeader set sec-mellon-name-id %{MELLON_NAME_ID}e "expr=-n env('MELLON_NAME_ID')"
-        RequestHeader set sec-username %{MELLON_EPPN}e "expr=-n env('MELLON_EPPN')"
-        RequestHeader set sec-longname %{MELLON_CN}e "expr=-n env('MELLON_CN')"
-        RequestHeader set sec-name %{MELLON_SN}e "expr=-n env('MELLON_SN')"
-        RequestHeader set sec-email %{MELLON_MAIL}e "expr=-n env('MELLON_MAIL')"
-        RequestHeader set sec-org %{MELLON_O}e "expr=-n env('MELLON_O')"
-        RequestHeader set sec-firstname %{MELLON_GIVEN_NAME}e "expr=-n env('MELLON_GIVEN_NAME')"
-        RequestHeader set sec-lastname %{MELLON_SN}e "expr=-n env('MELLON_SN')"
+        RequestHeader set preauth-username %{MELLON_EPPN}e "expr=-n env('MELLON_EPPN')"
+        RequestHeader set preauth-email %{MELLON_MAIL}e "expr=-n env('MELLON_MAIL')"
+        RequestHeader set preauth-firstname %{MELLON_GIVEN_NAME}e "expr=-n env('MELLON_GIVEN_NAME')"
+        RequestHeader set preauth-lastname %{MELLON_SN}e "expr=-n env('MELLON_SN')"
+        RequestHeader set preauth-org %{MELLON_O}e "expr=-n env('MELLON_O')"
 
         ProxyPass "http://georchestra-gateway-svc:8080/"
         ProxyPassReverse "http://georchestra-gateway-svc:8080/"
@@ -179,9 +180,7 @@ The following Apache configuration has been used in a setup to interact with the
 </VirtualHost>
 ```
 
-You can see that Apache is taking care of sanitizing the request with the multiple calls to `RequestHeader unset` before
-setting them to a value provided by the `mod_mellon` if available, else they are kept unset.
+You can see that Apache is taking care of sanitizing the request with the multiple calls to `RequestHeader unset` before setting them to a value provided by the `mod_mellon` if available, else they are kept unset.
 
-The second `Location` allows to trigger an authentication when hitting the `/login/renater` endpoint, which is linked
-onto a custom login page of the gateway.
+The second `Location` allows to trigger an authentication when hitting the `/login/renater` endpoint, which is linked onto a custom login page of the gateway.
 
