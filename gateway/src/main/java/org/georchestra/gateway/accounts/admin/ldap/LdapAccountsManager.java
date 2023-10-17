@@ -86,37 +86,12 @@ class LdapAccountsManager extends AbstractAccountsManager {
             throw new IllegalStateException(accountError);
         }
 
-        String orgId = newAccount.getOrg();
-        try { // account created, add org
-            Org org;
-            try {
-                org = orgsDao.findByCommonName(orgId);
-                // org already in the LDAP, add the newly
-                // created account to it
-                List<String> currentMembers = org.getMembers();
-                currentMembers.add(newAccount.getUid());
-                org.setMembers(currentMembers);
-                orgsDao.update(org);
-            } catch (NameNotFoundException e) {
-                log.info("Org {} does not exist, trying to create it", orgId);
-                // org does not exist yet, create it
-                org = new Org();
-                org.setId(orgId);
-                org.setName(orgId);
-                org.setMembers(Arrays.asList(newAccount.getUid()));
-                orgsDao.insert(org);
-            }
-        } catch (Exception orgError) {
-            log.error("Error when trying to create / update the organisation {}, reverting the account creation", orgId,
-                    orgError);
-            try {// roll-back account
-                accountDao.delete(newAccount);
-            } catch (NameNotFoundException | DataServiceException rollbackError) {
-                log.warn("Error reverting user creation after roleDao update failure", rollbackError);
-            }
-            throw new IllegalStateException(orgError);
-        }
+        ensureOrgExists(newAccount);
 
+        ensureRolesExist(mapped, newAccount);
+    }
+
+    private void ensureRolesExist(GeorchestraUser mapped, Account newAccount) {
         try {// account created, add roles
             if (!mapped.getRoles().contains("ROLE_USER")) {
                 roleDao.addUser("USER", newAccount);
@@ -165,5 +140,40 @@ class LdapAccountsManager extends AbstractAccountsManager {
         newAccount.setPending(false);
         newAccount.setOrg(org);
         return newAccount;
+    }
+
+    private void ensureOrgExists(@NonNull Account newAccount) {
+        String orgId = newAccount.getOrg();
+        if (null == orgId)
+            return;
+        try { // account created, add org
+            Org org;
+            try {
+                org = orgsDao.findByCommonName(orgId);
+                // org already in the LDAP, add the newly
+                // created account to it
+                List<String> currentMembers = org.getMembers();
+                currentMembers.add(newAccount.getUid());
+                org.setMembers(currentMembers);
+                orgsDao.update(org);
+            } catch (NameNotFoundException e) {
+                log.info("Org {} does not exist, trying to create it", orgId);
+                // org does not exist yet, create it
+                org = new Org();
+                org.setId(orgId);
+                org.setName(orgId);
+                org.setMembers(Arrays.asList(newAccount.getUid()));
+                orgsDao.insert(org);
+            }
+        } catch (Exception orgError) {
+            log.error("Error when trying to create / update the organisation {}, reverting the account creation", orgId,
+                    orgError);
+            try {// roll-back account
+                accountDao.delete(newAccount);
+            } catch (NameNotFoundException | DataServiceException rollbackError) {
+                log.warn("Error reverting user creation after orgsDao update failure", rollbackError);
+            }
+            throw new IllegalStateException(orgError);
+        }
     }
 }
