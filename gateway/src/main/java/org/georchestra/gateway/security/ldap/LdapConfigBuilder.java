@@ -64,6 +64,7 @@ class LdapConfigBuilder {
                 .rolesRdn(config.getRoles().getRdn())//
                 .rolesSearchFilter(config.getRoles().getSearchFilter())//
                 .orgsRdn(config.getOrgs().getRdn())//
+                .pendingOrgsRdn(config.getOrgs().getPendingRdn())//
                 .adminDn(toOptional(config.getAdminDn()))//
                 .adminPassword(toOptional(config.getAdminPassword()))//
                 .build();

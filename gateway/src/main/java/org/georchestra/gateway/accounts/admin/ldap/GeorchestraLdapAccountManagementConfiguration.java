@@ -54,10 +54,10 @@ public class GeorchestraLdapAccountManagementConfiguration {
     @Bean
     AccountManager ldapAccountsManager(//
             ApplicationEventPublisher eventPublisher, //
-            AccountDao accountDao, RoleDao roleDao) {
+            AccountDao accountDao, RoleDao roleDao, OrgsDao orgsDao) {
 
         UsersApi usersApi = ldapUsersApi(accountDao, roleDao);
-        return new LdapAccountsManager(eventPublisher::publishEvent, accountDao, roleDao, usersApi);
+        return new LdapAccountsManager(eventPublisher::publishEvent, accountDao, roleDao, orgsDao, usersApi);
     }
 
     @Bean
@@ -121,7 +121,10 @@ public class GeorchestraLdapAccountManagementConfiguration {
     OrgsDao orgsDao(LdapTemplate ldapTemplate, LdapConfigProperties config) {
         OrgsDaoImpl impl = new OrgsDaoImpl();
         impl.setLdapTemplate(ldapTemplate);
-        impl.setOrgSearchBaseDN(config.extendedEnabled().get(0).getOrgsRdn());
+        ExtendedLdapConfig ldapConfig = config.extendedEnabled().get(0);
+        impl.setBasePath(ldapConfig.getBaseDn());
+        impl.setOrgSearchBaseDN(ldapConfig.getOrgsRdn());
+        impl.setPendingOrgSearchBaseDN(ldapConfig.getPendingOrgsRdn());
         return impl;
     }
 
@@ -149,8 +152,6 @@ public class GeorchestraLdapAccountManagementConfiguration {
         requireNonNull(orgSearchBaseDN);
         impl.setOrgSearchBaseDN(orgSearchBaseDN);
 
-        // not needed here, only console cares, we shouldn't allow to authenticate
-        // pending users, should we?
         final String pendingOrgSearchBaseDN = "ou=pendingorgs";
         impl.setPendingOrgSearchBaseDN(pendingOrgSearchBaseDN);
 

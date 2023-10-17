@@ -46,4 +46,5 @@ public class ExtendedLdapConfig {
     private @NonNull Optional<String> adminPassword;
 
     private @NonNull String orgsRdn;
+    private @NonNull String pendingOrgsRdn;
 }

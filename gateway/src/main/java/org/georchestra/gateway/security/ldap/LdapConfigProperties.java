@@ -176,6 +176,11 @@ public class LdapConfigProperties implements Validator {
          * Organizations search base. Default: ou=orgs
          */
         private String rdn = "ou=orgs";
+
+        /**
+         * Pending organizations search base. Default: ou=pendingorgs
+         */
+        private String pendingRdn = "ou=pendingorgs";
     }
 
     public @Override boolean supports(Class<?> clazz) {
