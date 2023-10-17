@@ -2,7 +2,7 @@
 # set wiretap to true and logging levels to trace
 spring:
   config:
-    import: optional:file:src/test/resources/test-datadir/gateway/security.yaml
+    import: optional:classpath:/test-datadir/gateway/security.yaml
   cloud:
     gateway:
       httpclient:
