@@ -1,15 +1,8 @@
-package org.georchestra.gateway.autoconfigure.accounts.admin;
+package org.georchestra.gateway.accounts.admin;
 
-import net.minidev.json.JSONArray;
 import org.georchestra.ds.users.AccountDao;
-import org.georchestra.gateway.accounts.admin.AccountManager;
-import org.georchestra.gateway.accounts.admin.CreateAccountUserCustomizer;
 import org.georchestra.gateway.app.GeorchestraGatewayApplication;
-import org.georchestra.gateway.security.preauth.HeaderPreAuthenticationConfiguration;
 import org.georchestra.testcontainers.ldap.GeorchestraLdapContainer;
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -22,10 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.util.Map;
-import java.util.function.Consumer;
 
-import static org.hamcrest.Matchers.arrayContaining;
-import static org.hamcrest.Matchers.arrayContainingInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
