@@ -32,6 +32,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -72,17 +73,11 @@ public class OAuth2Configuration {
         }
     }
 
-    /**
-     * TODO: REVISIT, we don't know why this bean has been added, but it breaks
-     * OAuth2SecurityAutoConfigurationTest as there's no
-     * InMemoryReactiveClientRegistrationRepository
-     */
-    // @Bean
+    @Bean
+    @Profile("!test")
     ServerLogoutSuccessHandler oidcLogoutSuccessHandler(
             InMemoryReactiveClientRegistrationRepository clientRegistrationRepository,
             ExtendedOAuth2ClientProperties properties) {
-        OidcClientInitiatedServerLogoutSuccessHandler oidcLogoutSuccessHandler = new OidcClientInitiatedServerLogoutSuccessHandler(
-                clientRegistrationRepository);
         clientRegistrationRepository.forEach(client -> {
             if (client.getProviderDetails().getConfigurationMetadata().isEmpty()
                     && properties.getProvider().get(client.getRegistrationId()) != null
@@ -97,8 +92,10 @@ public class OAuth2Configuration {
                 }
             }
         });
-        oidcLogoutSuccessHandler.setPostLogoutRedirectUri("{baseUrl}/login?logout");
 
+        OidcClientInitiatedServerLogoutSuccessHandler oidcLogoutSuccessHandler = new OidcClientInitiatedServerLogoutSuccessHandler(
+                clientRegistrationRepository);
+        oidcLogoutSuccessHandler.setPostLogoutRedirectUri("{baseUrl}/login?logout");
         return oidcLogoutSuccessHandler;
     }
 

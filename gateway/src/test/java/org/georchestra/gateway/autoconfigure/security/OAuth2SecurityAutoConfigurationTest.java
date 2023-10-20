@@ -41,7 +41,8 @@ import org.springframework.security.oauth2.client.userinfo.ReactiveOAuth2UserSer
  */
 class OAuth2SecurityAutoConfigurationTest {
     private ReactiveWebApplicationContextRunner runner = new ReactiveWebApplicationContextRunner()
-            .withConfiguration(AutoConfigurations.of(OAuth2SecurityAutoConfiguration.class));
+            .withConfiguration(AutoConfigurations.of(OAuth2SecurityAutoConfiguration.class))
+            .withPropertyValues("spring.profiles.active=test");
 
     @Test
     void testDisabledByDefault() {
